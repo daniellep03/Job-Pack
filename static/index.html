@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manifest — Transforming potential into opportunity</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #060912;
+      --surface: #0d1117;
+      --surface2: #161b27;
+      --surface3: #1e2535;
+      --accent: #7c6af7;
+      --accent2: #a78bfa;
+      --accent-glow: rgba(124, 106, 247, 0.15);
+      --green: #34d399;
+      --red: #f87171;
+      --text: #f0f4ff;
+      --muted: #8892a4;
+      --border: #1e2535;
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(6, 9, 18, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .nav-logo-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .backend-pill {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .backend-pill b { color: var(--accent2); }
+
+    .btn-app {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .15s;
+      font-family: inherit;
+    }
+    .btn-app:hover { opacity: .85; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 160px 40px 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 600px;
+      background: radial-gradient(ellipse at center, rgba(124,106,247,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface2);
+      border: 1px solid rgba(124,106,247,0.3);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 12px;
+      color: var(--accent2);
+      font-weight: 500;
+      margin-bottom: 32px;
+    }
+
+    .hero h1 {
+      font-size: clamp(42px, 6vw, 72px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #fff 30%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-tagline {
+      font-size: 18px;
+      color: var(--muted);
+      font-weight: 400;
+      margin-bottom: 48px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary-hero {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 14px 32px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: inherit;
+      box-shadow: 0 0 40px rgba(124,106,247,0.3);
+    }
+    .btn-primary-hero:hover { transform: translateY(-2px); box-shadow: 0 0 60px rgba(124,106,247,0.4); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 32px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: inherit;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent2); }
+
+    /* ── FEATURES ── */
+    .features {
+      padding: 80px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 580px;
+      margin: 0 auto 56px;
+      line-height: 1.6;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      transition: all .2s;
+    }
+    .feature-card:hover {
+      border-color: rgba(124,106,247,0.4);
+      background: var(--surface2);
+      transform: translateY(-4px);
+    }
+
+    .feature-icon {
+      width: 48px; height: 48px;
+      background: var(--accent-glow);
+      border: 1px solid rgba(124,106,247,0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── MISSION / PURPOSE ── */
+    .about {
+      padding: 80px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .about-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+
+    .about-card .card-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 12px;
+    }
+
+    .about-card h3 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .about-card p {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── APP SECTION ── */
+    #app-section {
+      padding: 80px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .app-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 20px;
+      min-height: 600px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sidebar-header h2 {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .btn-new {
+      background: var(--accent-glow);
+      color: var(--accent2);
+      border: 1px solid rgba(124,106,247,0.3);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: inherit;
+      transition: all .15s;
+    }
+    .btn-new:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+    #draft-list { overflow-y: auto; flex: 1; padding: 8px; }
+
+    .draft-item {
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      margin-bottom: 4px;
+      transition: all .15s;
+    }
+    .draft-item:hover { background: var(--surface2); }
+    .draft-item.active { background: var(--surface2); border-color: rgba(124,106,247,0.4); }
+    .draft-item .title { font-size: 13px; font-weight: 600; }
+    .draft-item .date { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    /* Main panel */
+    .main-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      overflow-y: auto;
+    }
+
+    /* Upload button */
+    .upload-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface3);
+      border: 1px dashed rgba(124,106,247,0.4);
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent2);
+      cursor: pointer;
+      transition: all .15s;
+      font-family: inherit;
+    }
+    .upload-btn:hover { background: var(--accent-glow); border-color: var(--accent); }
+    #file-input { display: none; }
+
+    /* Template picker */
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .template-card {
+      background: var(--surface2);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      cursor: pointer;
+      transition: all .15s;
+      text-align: center;
+    }
+    .template-card:hover { border-color: rgba(124,106,247,0.4); }
+    .template-card.selected { border-color: var(--accent); background: var(--accent-glow); }
+    .template-card .t-thumb {
+      width: 100%;
+      aspect-ratio: 3/4;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .template-card .t-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .template-card .t-desc {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.3;
+    }
+
+    /* Resume HTML preview */
+    #resume-preview-container {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 14px;
+      max-height: 480px;
+      overflow-y: auto;
+      background: #fff;
+    }
+    #resume-preview-container.hidden { display: none; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .field label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+    .field input, .field textarea {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      transition: border-color .15s;
+    }
+    .field input:focus, .field textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124,106,247,0.1);
+    }
+    textarea { min-height: 160px; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    #error-msg {
+      background: rgba(248,113,113,0.1);
+      border: 1px solid rgba(248,113,113,0.3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #fca5a5;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    #loading {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 12px 0;
+    }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-generate {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 28px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(124,106,247,0.3);
+    }
+    .btn-generate:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(124,106,247,0.4); }
+    .btn-generate:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    /* Results */
+    #results { margin-top: 28px; }
+
+    .result-tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      border: 1px solid transparent;
+      border-bottom: none;
+      color: var(--muted);
+      transition: all .15s;
+      font-family: inherit;
+      background: none;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { background: var(--surface2); border-color: var(--border); color: var(--text); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .text-output {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+      font-size: 13px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      font-family: inherit;
+      max-height: 380px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+    }
+
+    .download-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .btn-sm {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 500;
+      font-family: inherit;
+      transition: all .15s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-sm:hover { border-color: var(--accent); color: var(--accent2); }
+    .btn-danger { border-color: rgba(248,113,113,0.3); color: #f87171; }
+    .btn-danger:hover { background: rgba(248,113,113,0.1); border-color: #f87171; }
+
+    #infographic-container svg { width: 100%; height: auto; border-radius: 10px; }
+
+    /* Pro / Con cards */
+    .fit-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+      cursor: default;
+      transition: all .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .fit-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      border-radius: 10px 0 0 10px;
+    }
+    .fit-card.pro::before { background: #22c55e; }
+    .fit-card.con::before { background: #f87171; }
+    .fit-card:hover { transform: translateX(4px); }
+    .fit-card.pro:hover { background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.3); }
+    .fit-card.con:hover { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.3); }
+    .fit-card .card-tip {
+      display: none;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px solid var(--border);
+    }
+    .fit-card:hover .card-tip { display: block; }
+
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .compare-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      overflow: hidden;
+    }
+    .compare-card h3 { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+    #tab-compare { overflow-x: hidden; }
+    #compare-output { overflow-x: hidden; }
+    #compare-output > div { min-width: 0; overflow: hidden; }
+
+    .sep { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+    .edit-actions { display: flex; gap: 8px; margin-top: 10px; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      text-align: center;
+    }
+    .footer-logo {
+      font-size: 20px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    footer p { font-size: 13px; color: var(--muted); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      .app-layout { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      nav { padding: 0 20px; }
+      .hero { padding: 120px 20px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-icon">✦</div>
+    <span class="nav-logo-text">Manifest</span>
+  </a>
+  <div class="nav-right">
+    <div class="backend-pill">AI: <b id="backend-label">loading…</b></div>
+    <button class="btn-app" onclick="scrollToApp()">Launch App</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">✦ AI-Powered Career Tools</div>
+  <h1>Transforming potential<br>into opportunity.</h1>
+  <p class="hero-tagline">
+    Paste a job description and your profile — Manifest generates a tailored résumé, cover letter, and company-fit analysis in seconds.
+  </p>
+  <div class="hero-cta">
+    <button class="btn-primary-hero" onclick="scrollToApp()">✦ Start Manifesting</button>
+    <button class="btn-ghost" onclick="scrollToAbout()">Learn More</button>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <p class="section-label">What You Get</p>
+  <h2 class="section-title">Everything you need to land the job</h2>
+  <p class="section-sub">Three powerful outputs, personalized to every application, generated in one click.</p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📄</div>
+      <h3>Tailored Résumé</h3>
+      <p>ATS-optimized résumé rewritten to match the exact keywords and requirements of each job description. Download as a polished PDF.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✉️</div>
+      <h3>Cover Letter</h3>
+      <p>A compelling, three-paragraph cover letter addressed to the company — hook, evidence, and close — ready to send immediately.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Company Fit Report</h3>
+      <p>A one-page visual infographic showing pros, cons, and a fit score so you can make informed decisions about every opportunity.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💾</div>
+      <h3>Draft Management</h3>
+      <p>Save, revisit, and compare multiple drafts for the same job. Refine your application over time until it's perfect.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✏️</div>
+      <h3>Editable Output</h3>
+      <p>Every generated document is fully editable. Add your personal touch, then download the updated PDF with one click.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h3>Private & Secure</h3>
+      <p>Your data stays on your own server. No third-party scraping, no data selling. Your career information is yours alone.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT / MISSION / PURPOSE -->
+<section class="about" id="about">
+  <p class="section-label">Our Why</p>
+  <h2 class="section-title">Built with purpose</h2>
+  <p class="section-sub">Manifest isn't just a tool — it's a philosophy about how job seekers deserve to show up in the world.</p>
+
+  <div class="about-grid">
+    <div class="about-card">
+      <p class="card-eyebrow">Mission</p>
+      <h3>Empower every applicant</h3>
+      <p>Manifest empowers job seekers to present their best professional selves using AI — creating personalized résumés, tailored cover letters, and company-fit insights that align with their skills, values, and career goals.</p>
+    </div>
+    <div class="about-card">
+      <p class="card-eyebrow">Purpose</p>
+      <h3>Make every application count</h3>
+      <p>Most applications are generic. Manifest changes that. By analyzing job descriptions and candidate profiles together, Manifest transforms ordinary applications into targeted, job-specific materials that help candidates stand out, understand potential employers, and make smarter career decisions.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- APP -->
+<section id="app-section">
+  <p class="section-label">The App</p>
+  <h2 class="section-title" style="margin-bottom:8px;">Build your application</h2>
+  <p class="section-sub">Paste a job description and your profile below. Manifest handles the rest.</p>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Drafts</h2>
+        <button class="btn-new" onclick="newDraft()">+ New</button>
+      </div>
+      <div id="draft-list">
+        <p style="padding:16px;font-size:12px;color:var(--muted)">No drafts yet.</p>
+      </div>
+    </aside>
+
+    <!-- Main panel -->
+    <div class="main-panel">
+      <div id="form-section">
+        <div class="field">
+          <label for="job-title">Draft Name / Job Title</label>
+          <input type="text" id="job-title" placeholder="e.g. Software Engineer @ Acme Corp" />
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="job-desc">Job Description</label>
+            <textarea id="job-desc" placeholder="Paste the full job description here…"></textarea>
+          </div>
+          <div class="field">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+              <label for="candidate" style="margin-bottom:0">Your Profile / Résumé</label>
+              <div>
+                <input type="file" id="file-input" accept=".pdf,.docx,.txt" onchange="handleFileUpload(event)" />
+                <button class="upload-btn" onclick="document.getElementById('file-input').click()">
+                  📎 Upload File
+                </button>
+              </div>
+            </div>
+            <textarea id="candidate" placeholder="Paste your résumé here, or upload a PDF / DOCX / TXT file above…"></textarea>
+            <span id="upload-status" style="font-size:11px;color:var(--muted);display:none;"></span>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <p style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px;">Choose Résumé Template</p>
+          <div class="template-grid" style="grid-template-columns:repeat(5,1fr);">
+            <div class="template-card selected" data-template="classic" onclick="selectTemplate('classic')">
+              <div class="t-thumb" id="thumb-classic">
+                <svg viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+                  <rect width="90" height="120" fill="#fff"/>
+                  <text x="45" y="16" text-anchor="middle" font-family="serif" font-size="8" font-weight="bold" fill="#1a1a1a">JANE DOE</text>
+                  <line x1="8" y1="20" x2="82" y2="20" stroke="#333" stroke-width="1"/>
+                  <text x="45" y="27" text-anchor="middle" font-family="serif" font-size="4.5" fill="#555">jane@email.com · (555) 123-4567</text>
+                  <line x1="8" y1="33" x2="82" y2="33" stroke="#aaa" stroke-width="0.5"/>
+                  <text x="8" y="40" font-family="serif" font-size="5" font-weight="bold" fill="#1a1a1a">EXPERIENCE</text>
+                  <text x="8" y="48" font-family="serif" font-size="4" fill="#333">Senior Analyst · Acme Corp</text>
+                  <rect x="10" y="51" width="40" height="2.5" rx="1" fill="#ddd"/>
+                  <rect x="10" y="55" width="60" height="2.5" rx="1" fill="#eee"/>
+                  <rect x="10" y="59" width="55" height="2.5" rx="1" fill="#eee"/>
+                  <line x1="8" y1="66" x2="82" y2="66" stroke="#aaa" stroke-width="0.5"/>
+                  <text x="8" y="73" font-family="serif" font-size="5" font-weight="bold" fill="#1a1a1a">EDUCATION</text>
+                  <rect x="10" y="76" width="50" height="2.5" rx="1" fill="#ddd"/>
+                  <rect x="10" y="80" width="40" height="2.5" rx="1" fill="#eee"/>
+                  <line x1="8" y1="87" x2="82" y2="87" stroke="#aaa" stroke-width="0.5"/>
+                  <text x="8" y="94" font-family="serif" font-size="5" font-weight="bold" fill="#1a1a1a">SKILLS</text>
+                  <rect x="10" y="97" width="65" height="2.5" rx="1" fill="#eee"/>
+                  <rect x="10" y="101" width="50" height="2.5" rx="1" fill="#eee"/>
+                </svg>
+              </div>
+              <div class="t-name">Classic</div>
+              <div class="t-desc">Traditional & ATS-safe</div>
+            </div>
+            <div class="template-card" data-template="modern_tech" onclick="selectTemplate('modern_tech')">
+              <div class="t-thumb">
+                <svg viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+                  <rect width="90" height="120" fill="#fff"/>
+                  <text x="8" y="16" font-family="sans-serif" font-size="10" font-weight="bold" fill="#0f172a">Jane Doe</text>
+                  <text x="8" y="23" font-family="sans-serif" font-size="4" fill="#64748b">jane@email.com · (555) 123-4567</text>
+                  <line x1="8" y1="27" x2="82" y2="27" stroke="#4f46e5" stroke-width="2"/>
+                  <rect x="6" y="33" width="78" height="10" rx="2" fill="#eef2ff"/>
+                  <text x="9" y="41" font-family="sans-serif" font-size="5" font-weight="bold" fill="#4f46e5">EXPERIENCE</text>
+                  <text x="8" y="50" font-family="sans-serif" font-size="4" fill="#0f172a">▸ Built dashboards saving 10hrs/week</text>
+                  <text x="8" y="55" font-family="sans-serif" font-size="4" fill="#0f172a">▸ Led migration to cloud infrastructure</text>
+                  <rect x="6" y="61" width="78" height="10" rx="2" fill="#eef2ff"/>
+                  <text x="9" y="69" font-family="sans-serif" font-size="5" font-weight="bold" fill="#4f46e5">EDUCATION</text>
+                  <rect x="8" y="73" width="55" height="2.5" rx="1" fill="#ddd"/>
+                  <rect x="8" y="77" width="40" height="2.5" rx="1" fill="#eee"/>
+                  <rect x="6" y="84" width="78" height="10" rx="2" fill="#eef2ff"/>
+                  <text x="9" y="92" font-family="sans-serif" font-size="5" font-weight="bold" fill="#4f46e5">SKILLS</text>
+                  <rect x="8" y="96" width="60" height="2.5" rx="1" fill="#eee"/>
+                  <rect x="8" y="100" width="45" height="2.5" rx="1" fill="#eee"/>
+                </svg>
+              </div>
+              <div class="t-name">Modern Tech</div>
+              <div class="t-desc">Indigo accents for tech</div>
+            </div>
+            <div class="template-card" data-template="multicolumn" onclick="selectTemplate('multicolumn')">
+              <div class="t-thumb">
+                <svg viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+                  <rect width="90" height="120" fill="#fff"/>
+                  <rect width="28" height="120" fill="#1e293b"/>
+                  <text x="14" y="16" text-anchor="middle" font-family="sans-serif" font-size="5.5" font-weight="bold" fill="white">Jane</text>
+                  <text x="14" y="23" text-anchor="middle" font-family="sans-serif" font-size="5.5" font-weight="bold" fill="white">Doe</text>
+                  <text x="5" y="34" font-family="sans-serif" font-size="4" font-weight="bold" fill="#38bdf8">CONTACT</text>
+                  <rect x="4" y="37" width="20" height="2" rx="1" fill="#475569"/>
+                  <rect x="4" y="41" width="18" height="2" rx="1" fill="#475569"/>
+                  <rect x="4" y="45" width="22" height="2" rx="1" fill="#475569"/>
+                  <text x="5" y="56" font-family="sans-serif" font-size="4" font-weight="bold" fill="#38bdf8">SKILLS</text>
+                  <rect x="4" y="59" width="19" height="2" rx="1" fill="#475569"/>
+                  <rect x="4" y="63" width="16" height="2" rx="1" fill="#475569"/>
+                  <rect x="4" y="67" width="21" height="2" rx="1" fill="#475569"/>
+                  <text x="5" y="78" font-family="sans-serif" font-size="4" font-weight="bold" fill="#38bdf8">EDUCATION</text>
+                  <rect x="4" y="81" width="20" height="2" rx="1" fill="#475569"/>
+                  <rect x="4" y="85" width="17" height="2" rx="1" fill="#475569"/>
+                  <text x="33" y="14" font-family="sans-serif" font-size="5" font-weight="bold" fill="#1a1a2e">EXPERIENCE</text>
+                  <line x1="33" y1="16" x2="86" y2="16" stroke="#cbd5e1" stroke-width="0.5"/>
+                  <rect x="33" y="19" width="50" height="2.5" rx="1" fill="#ddd"/>
+                  <rect x="33" y="23" width="45" height="2" rx="1" fill="#eee"/>
+                  <rect x="33" y="27" width="48" height="2" rx="1" fill="#eee"/>
+                  <rect x="33" y="31" width="40" height="2" rx="1" fill="#eee"/>
+                  <text x="33" y="42" font-family="sans-serif" font-size="5" font-weight="bold" fill="#1a1a2e">PROJECTS</text>
+                  <line x1="33" y1="44" x2="86" y2="44" stroke="#cbd5e1" stroke-width="0.5"/>
+                  <rect x="33" y="47" width="50" height="2.5" rx="1" fill="#ddd"/>
+                  <rect x="33" y="51" width="42" height="2" rx="1" fill="#eee"/>
+                  <rect x="33" y="55" width="46" height="2" rx="1" fill="#eee"/>
+                </svg>
+              </div>
+              <div class="t-name">Multicolumn</div>
+              <div class="t-desc">Dark sidebar + content</div>
+            </div>
+            <div class="template-card" data-template="minimalist" onclick="selectTemplate('minimalist')">
+              <div class="t-thumb">
+                <svg viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+                  <rect width="90" height="120" fill="#fff"/>
+                  <text x="10" y="18" font-family="sans-serif" font-size="11" font-weight="bold" fill="#111">Jane Doe</text>
+                  <text x="10" y="25" font-family="sans-serif" font-size="4" fill="#9ca3af">jane@email.com · (555) 123-4567</text>
+                  <line x1="10" y1="29" x2="80" y2="29" stroke="#e5e7eb" stroke-width="0.5"/>
+                  <text x="10" y="37" font-family="sans-serif" font-size="4.5" font-weight="bold" fill="#9ca3af">EXPERIENCE</text>
+                  <line x1="10" y1="39" x2="80" y2="39" stroke="#e5e7eb" stroke-width="0.5"/>
+                  <rect x="10" y="43" width="50" height="2.5" rx="1" fill="#e5e7eb"/>
+                  <rect x="10" y="47" width="62" height="2.5" rx="1" fill="#f3f4f6"/>
+                  <rect x="10" y="51" width="55" height="2.5" rx="1" fill="#f3f4f6"/>
+                  <text x="10" y="63" font-family="sans-serif" font-size="4.5" font-weight="bold" fill="#9ca3af">EDUCATION</text>
+                  <line x1="10" y1="65" x2="80" y2="65" stroke="#e5e7eb" stroke-width="0.5"/>
+                  <rect x="10" y="69" width="48" height="2.5" rx="1" fill="#e5e7eb"/>
+                  <rect x="10" y="73" width="38" height="2.5" rx="1" fill="#f3f4f6"/>
+                  <text x="10" y="85" font-family="sans-serif" font-size="4.5" font-weight="bold" fill="#9ca3af">SKILLS</text>
+                  <line x1="10" y1="87" x2="80" y2="87" stroke="#e5e7eb" stroke-width="0.5"/>
+                  <rect x="10" y="91" width="60" height="2.5" rx="1" fill="#f3f4f6"/>
+                  <rect x="10" y="95" width="45" height="2.5" rx="1" fill="#f3f4f6"/>
+                </svg>
+              </div>
+              <div class="t-name">Minimalist</div>
+              <div class="t-desc">Clean & creative</div>
+            </div>
+
+            <!-- 6 new templates -->
+            <div class="template-card" data-template="executive_banner" onclick="selectTemplate('executive_banner')">
+              <div class="t-thumb">
+                <svg viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+                  <rect width="90" height="120" fill="#fff"/>
+                  <rect width="90" height="24" fill="#4a4a4a"/>
+                  <text x="8" y="15" font-family="sans-serif" font-size="8" font-weight="bold" fill="white">JANE DOE</text>
+                  <text x="82" y="11" text-anchor="end" font-family="sans-serif" font-size="3.5" fill="#ddd">jane@email.com</text>
+                  <text x="82" y="16" text-anchor="end" font-family="sans-serif" font-size="3.5" fill="#ddd">(555) 123-4567</text>
+                  <text x="8" y="34" font-family="sans-serif" font-size="4.5" font-weight="bold" fill="#333">EXPERIENCE</text>
+                  <line x1="8" y1="36" x2="82" y2="36" stroke="#ccc" stroke-width="0.5"/>
+                  <rect x="8" y="39" width="50" height="2.5" rx="1" fill="#ddd"/>
+                  <rect x="8" y="43" width="65" height="2" rx="1" fill="#eee"/>
+                  <rect x="8" y="47" width="60" height="2" rx="1" fill="#eee"/>
+                  <text x="8" y="57" font-family="sans-serif" font-size="4.5" font-weight="bold" fill="#333">EDUCATION</text>
+                  <line x1="8" y1="59" x2="82" y2="59" stroke="#ccc" stroke-width="0.5"/>
+                  <rect x="8" y="62" width="48" height="2.5" rx="1" fill="#ddd"/>
+                  <rect x="8" y="66" width="38" height="2" rx="1" fill="#eee"/>
+                  <text x="8" y="76" font-family="sans-serif" font-size="4.5" font-weight="bold" fill="#333">SKILLS</text>
+                  <line x1="8" y1="78" x2="82" y2="78" stroke="#ccc" stroke-width="0.5"/>
+                  <rect x="8" y="81" width="60" height="2" rx="1" fill="#eee"/>
+                  <rect x="8" y="85" width="45" height="2" rx="1" fill="#eee"/>
+                </svg>
+              </div>
+              <div class="t-name">Executive Banner</div>
+              <div class="t-desc">Gray header, white caps</div>
+            </div>
+
+            <div class="template-card" data-template="bold_header" onclick="selectTemplate('bold_header')">
+              <div class="t-thumb">
+                <svg viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+                  <rect width="90" height="120" fill="#fff"/>
+                  <text x="8" y="16" font-family="sans-serif" font-size="13" font-weight="bold" fill="#111">JANE DOE</text>
+                  <line x1="8" y1="20" x2="82" y2="20" stroke="#111" stroke-width="2"/>
+                  <text x="8" y="27" font-family="sans-serif" font-size="4" fill="#555">jane@email.com · (555) 123-4567</text>
+                  <line x1="8" y1="31" x2="82" y2="31" stroke="#bbb" stroke-width="0.5"/>
+                  <text x="8" y="39" font-family="sans-serif" font-size="5" font-weight="bold" fill="#111">EXPERIENCE</text>
+                  <line x1="8" y1="41" x2="82" y2="41" stroke="#111" stroke-width="1"/>
+                  <rect x="8" y="44" width="50" height="2.5" rx="1" fill="#ddd"/>
+                  <rect x="8" y="48" width="65" height="2" rx="1" fill="#eee"/>
+                  <rect x="8" y="52" width="58" height="2" rx="1" fill="#eee"/>
+                  <text x="8" y="62" font-family="sans-serif" font-size="5" font-weight="bold" fill="#111">EDUCATION</text>
+                  <line x1="8" y1="64" x2="82" y2="64" stroke="#111" stroke-width="1"/>
+                  <rect x="8" y="67" width="48" height="2.5" rx="1" fill="#ddd"/>
+                  <rect x="8" y="71" width="38" height="2" rx="1" fill="#eee"/>
+                  <text x="8" y="81" font-family="sans-serif" font-size="5" font-weight="bold" fill="#111">SKILLS</text>
+                  <line x1="8" y1="83" x2="82" y2="83" stroke="#111" stroke-width="1"/>
+                  <rect x="8" y="86" width="60" height="2" rx="1" fill="#eee"/>
+                </svg>
+              </div>
+              <div class="t-name">Bold Header</div>
+              <div class="t-desc">Giant caps, high impact</div>
+            </div>
+
+            <div class="template-card" data-template="split_column" onclick="selectTemplate('split_column')">
+              <div class="t-thumb">
+                <svg viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+                  <rect width="90" height="120" fill="#fff"/>
+                  <text x="45" y="12" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="bold" fill="#111">Daniel Johnson</text>
+                  <line x1="8" y1="15" x2="82" y2="15" stroke="#999" stroke-width="0.8"/>
+                  <text x="45" y="21" text-anchor="middle" font-family="sans-serif" font-size="3.5" fill="#666">jane@email.com · (555) 123-4567</text>
+                  <line x1="20" y1="24" x2="70" y2="24" stroke="#ddd" stroke-width="0.5"/>
+                  <text x="22" y="32" font-family="sans-serif" font-size="4" font-weight="bold" fill="#333">EXPERIENCE</text>
+                  <line x1="8" y1="34" x2="44" y2="34" stroke="#999" stroke-width="0.5"/>
+                  <rect x="8" y="37" width="32" height="2" rx="1" fill="#ddd"/>
+                  <rect x="8" y="41" width="36" height="2" rx="1" fill="#eee"/>
+                  <rect x="8" y="45" width="33" height="2" rx="1" fill="#eee"/>
+                  <text x="52" y="32" font-family="sans-serif" font-size="4" font-weight="bold" fill="#333">EDUCATION</text>
+                  <line x1="46" y1="34" x2="82" y2="34" stroke="#999" stroke-width="0.5"/>
+                  <rect x="46" y="37" width="32" height="2" rx="1" fill="#ddd"/>
+                  <rect x="46" y="41" width="28" height="2" rx="1" fill="#eee"/>
+                  <text x="52" y="55" font-family="sans-serif" font-size="4" font-weight="bold" fill="#333">SKILLS</text>
+                  <line x1="46" y1="57" x2="82" y2="57" stroke="#999" stroke-width="0.5"/>
+                  <rect x="46" y="60" width="30" height="2" rx="1" fill="#eee"/>
+                  <rect x="46" y="64" width="25" height="2" rx="1" fill="#eee"/>
+                </svg>
+              </div>
+              <div class="t-name">Split Column</div>
+              <div class="t-desc">Two equal columns</div>
+            </div>
+
+            <div class="template-card" data-template="simple_sidebar" onclick="selectTemplate('simple_sidebar')">
+              <div class="t-thumb">
+                <svg viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+                  <rect width="90" height="120" fill="#fff"/>
+                  <rect width="26" height="120" fill="#f5f5f5"/>
+                  <rect x="4" y="6" width="14" height="10" fill="#111"/>
+                  <text x="13" y="22" text-anchor="middle" font-family="sans-serif" font-size="4.5" font-weight="bold" fill="#222">Jane</text>
+                  <text x="13" y="28" text-anchor="middle" font-family="sans-serif" font-size="4.5" font-weight="bold" fill="#222">Doe</text>
+                  <text x="4" y="38" font-family="sans-serif" font-size="3.5" font-weight="bold" fill="#555">CONTACT</text>
+                  <rect x="4" y="41" width="18" height="1.5" rx="0.5" fill="#aaa"/>
+                  <rect x="4" y="44" width="16" height="1.5" rx="0.5" fill="#aaa"/>
+                  <text x="4" y="54" font-family="sans-serif" font-size="3.5" font-weight="bold" fill="#555">SKILLS</text>
+                  <rect x="4" y="57" width="18" height="1.5" rx="0.5" fill="#aaa"/>
+                  <rect x="4" y="60" width="14" height="1.5" rx="0.5" fill="#aaa"/>
+                  <text x="31" y="14" font-family="sans-serif" font-size="5" font-weight="bold" fill="#222">EXPERIENCE</text>
+                  <line x1="31" y1="16" x2="86" y2="16" stroke="#ccc" stroke-width="0.5"/>
+                  <rect x="31" y="19" width="50" height="2.5" rx="1" fill="#ddd"/>
+                  <rect x="31" y="23" width="45" height="2" rx="1" fill="#eee"/>
+                  <rect x="31" y="27" width="48" height="2" rx="1" fill="#eee"/>
+                  <text x="31" y="38" font-family="sans-serif" font-size="5" font-weight="bold" fill="#222">EDUCATION</text>
+                  <line x1="31" y1="40" x2="86" y2="40" stroke="#ccc" stroke-width="0.5"/>
+                  <rect x="31" y="43" width="42" height="2.5" rx="1" fill="#ddd"/>
+                  <rect x="31" y="47" width="36" height="2" rx="1" fill="#eee"/>
+                </svg>
+              </div>
+              <div class="t-name">Simple Sidebar</div>
+              <div class="t-desc">Light sidebar, serif main</div>
+            </div>
+
+            <div class="template-card" data-template="professional" onclick="selectTemplate('professional')">
+              <div class="t-thumb">
+                <svg viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+                  <rect width="90" height="120" fill="#fff"/>
+                  <text x="45" y="14" text-anchor="middle" font-family="sans-serif" font-size="10" font-weight="bold" fill="#1a1a1a">Daniel Johnson</text>
+                  <line x1="8" y1="17" x2="82" y2="17" stroke="#888" stroke-width="0.8"/>
+                  <text x="45" y="23" text-anchor="middle" font-family="sans-serif" font-size="4" fill="#666">San Francisco, CA · 508-278-2542 · email@here.com</text>
+                  <line x1="22" y1="26" x2="68" y2="26" stroke="#ccc" stroke-width="0.5"/>
+                  <text x="8" y="34" font-family="sans-serif" font-size="4.5" font-weight="bold" fill="#1a1a1a">Summary</text>
+                  <line x1="8" y1="36" x2="82" y2="36" stroke="#888" stroke-width="0.5"/>
+                  <rect x="8" y="39" width="70" height="2" rx="1" fill="#eee"/>
+                  <rect x="8" y="43" width="65" height="2" rx="1" fill="#eee"/>
+                  <text x="8" y="52" font-family="sans-serif" font-size="4.5" font-weight="bold" fill="#1a1a1a">Experience</text>
+                  <line x1="8" y1="54" x2="82" y2="54" stroke="#888" stroke-width="0.5"/>
+                  <rect x="8" y="57" width="50" height="2.5" rx="1" fill="#ddd"/>
+                  <rect x="8" y="61" width="65" height="2" rx="1" fill="#eee"/>
+                  <rect x="8" y="65" width="58" height="2" rx="1" fill="#eee"/>
+                  <text x="8" y="75" font-family="sans-serif" font-size="4.5" font-weight="bold" fill="#1a1a1a">Education</text>
+                  <line x1="8" y1="77" x2="82" y2="77" stroke="#888" stroke-width="0.5"/>
+                  <rect x="8" y="80" width="48" height="2.5" rx="1" fill="#ddd"/>
+                </svg>
+              </div>
+              <div class="t-name">Professional</div>
+              <div class="t-desc">Centered, clean classic</div>
+            </div>
+
+            <div class="template-card" data-template="compact_pro" onclick="selectTemplate('compact_pro')">
+              <div class="t-thumb">
+                <svg viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+                  <rect width="90" height="120" fill="#fff"/>
+                  <text x="8" y="11" font-family="sans-serif" font-size="8" font-weight="bold" fill="#111">Daniel Johnson</text>
+                  <text x="8" y="17" font-family="sans-serif" font-size="3.5" fill="#555">SF, CA · 508-278-2542 · email@here.com</text>
+                  <line x1="8" y1="20" x2="82" y2="20" stroke="#111" stroke-width="1.5"/>
+                  <text x="8" y="27" font-family="sans-serif" font-size="4" font-weight="bold" fill="#111">EXPERIENCE</text>
+                  <line x1="8" y1="29" x2="82" y2="29" stroke="#aaa" stroke-width="0.4"/>
+                  <rect x="8" y="31" width="45" height="2" rx="1" fill="#ddd"/>
+                  <rect x="8" y="34" width="60" height="1.8" rx="1" fill="#eee"/>
+                  <rect x="8" y="37" width="55" height="1.8" rx="1" fill="#eee"/>
+                  <rect x="8" y="40" width="58" height="1.8" rx="1" fill="#eee"/>
+                  <text x="8" y="47" font-family="sans-serif" font-size="4" font-weight="bold" fill="#111">EDUCATION</text>
+                  <line x1="8" y1="49" x2="82" y2="49" stroke="#aaa" stroke-width="0.4"/>
+                  <rect x="8" y="51" width="48" height="2" rx="1" fill="#ddd"/>
+                  <rect x="8" y="54" width="38" height="1.8" rx="1" fill="#eee"/>
+                  <text x="8" y="61" font-family="sans-serif" font-size="4" font-weight="bold" fill="#111">SKILLS</text>
+                  <line x1="8" y1="63" x2="82" y2="63" stroke="#aaa" stroke-width="0.4"/>
+                  <rect x="8" y="65" width="60" height="1.8" rx="1" fill="#eee"/>
+                  <rect x="8" y="68" width="50" height="1.8" rx="1" fill="#eee"/>
+                  <rect x="8" y="71" width="55" height="1.8" rx="1" fill="#eee"/>
+                </svg>
+              </div>
+              <div class="t-name">Compact Pro</div>
+              <div class="t-desc">Dense, max content</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div id="error-msg"></div>
+        <div id="loading"><div class="spinner"></div> Generating your application — this may take 30–60 seconds…</div>
+
+        <button class="btn-generate" id="generate-btn" onclick="generate()">
+          ✦ Generate My Application
+        </button>
+      </div>
+
+      <hr class="sep" />
+
+      <!-- Results -->
+      <div id="results" style="display:none">
+        <div class="result-tabs">
+          <button class="tab active" onclick="switchTab('resume')">📄 Résumé</button>
+          <button class="tab" onclick="switchTab('cover')">✉️ Cover Letter</button>
+          <button class="tab" onclick="switchTab('infographic')">📊 Company Fit</button>
+          <button class="tab" onclick="switchTab('compare')">⚖️ Compare</button>
+        </div>
+
+        <!-- Résumé -->
+        <div class="tab-panel active" id="tab-resume">
+          <!-- Inline edit toolbar (hidden until edit mode) -->
+          <div id="resume-toolbar" style="display:none;gap:8px;flex-wrap:wrap;align-items:center;
+               padding:10px 14px;background:var(--surface2);border:1px solid var(--accent);
+               border-radius:10px;margin-bottom:10px;">
+            <span style="font-size:11px;font-weight:700;color:var(--accent2);">✏️ Edit Mode — click anywhere in the preview to edit</span>
+            <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <select id="edit-font" onchange="applySelectionFormat('fontName',this.value)" style="background:var(--surface3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:4px 8px;font-size:12px;font-family:inherit;">
+                <option value="">Font</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Garamond">Garamond</option>
+                <option value="Verdana">Verdana</option>
+              </select>
+              <select id="edit-size" onchange="applySelectionFormat('fontSize',this.value)" style="background:var(--surface3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:4px 8px;font-size:12px;font-family:inherit;">
+                <option value="">Size</option>
+                <option value="1">8pt</option>
+                <option value="2">10pt</option>
+                <option value="3">12pt</option>
+                <option value="4">14pt</option>
+                <option value="5">18pt</option>
+                <option value="6">24pt</option>
+              </select>
+              <div style="display:flex;align-items:center;gap:4px;">
+                <span style="font-size:11px;color:var(--muted);">Color:</span>
+                <input type="color" id="edit-color" value="#000000" onchange="applySelectionFormat('foreColor',this.value)"
+                  style="width:26px;height:26px;border:1px solid var(--border);border-radius:6px;cursor:pointer;padding:1px;">
+              </div>
+              <button class="btn-sm" onclick="applySelectionFormat('bold')"><b>B</b></button>
+              <button class="btn-sm" onclick="applySelectionFormat('italic')"><i>I</i></button>
+              <button class="btn-sm" style="background:var(--accent);color:white;border-color:var(--accent);" onclick="saveInlineEdit('resume')">💾 Save</button>
+              <button class="btn-sm" onclick="toggleEditMode('resume', false)">✕ Cancel</button>
+            </div>
+          </div>
+
+          <!-- ATS Score Banner -->
+          <div id="ats-banner" style="display:none;margin-bottom:12px;background:var(--surface2);
+               border:1px solid var(--border);border-radius:12px;padding:16px 20px;">
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+              <div style="text-align:center;flex-shrink:0;">
+                <div id="ats-grade" style="font-size:32px;font-weight:900;line-height:1;"></div>
+                <div style="font-size:10px;color:var(--muted);margin-top:2px;">ATS Grade</div>
+              </div>
+              <div style="flex-shrink:0;text-align:center;">
+                <div id="ats-score-num" style="font-size:28px;font-weight:800;line-height:1;"></div>
+                <div style="font-size:10px;color:var(--muted);margin-top:2px;">Keyword Match</div>
+              </div>
+              <div style="flex:1;min-width:200px;">
+                <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">✅ Matched Keywords</div>
+                <div id="ats-matched" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;"></div>
+                <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">⚠️ Missing Keywords</div>
+                <div id="ats-missing" style="display:flex;flex-wrap:wrap;gap:4px;"></div>
+              </div>
+              <div style="flex-shrink:0;background:linear-gradient(135deg,rgba(124,106,247,0.1),transparent);
+                   border:1px solid rgba(124,106,247,0.2);border-radius:8px;padding:10px 14px;max-width:180px;">
+                <div style="font-size:10px;font-weight:700;color:var(--accent2);margin-bottom:4px;">🤖 → 🧑 Humanized</div>
+                <div style="font-size:10px;color:var(--muted);line-height:1.5;">Your résumé was enhanced to sound natural and stand out to both ATS and human reviewers.</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="resume-preview-container" class="hidden"></div>
+          <div class="text-output" id="resume-output" style="display:none"></div>
+
+          <div class="download-row" style="margin-top:10px;">
+            <a id="resume-pdf-link" class="btn-sm" href="#" target="_blank">⬇ Download PDF</a>
+            <button class="btn-sm" onclick="toggleEditMode('resume', true)">✏️ Edit Preview</button>
+            <button class="btn-sm" onclick="toggleRawResume()">🔤 Raw Text</button>
+          </div>
+        </div>
+
+        <!-- Cover Letter -->
+        <div class="tab-panel" id="tab-cover">
+          <div id="cover-toolbar" style="display:none;gap:8px;flex-wrap:wrap;align-items:center;
+               padding:10px 14px;background:var(--surface2);border:1px solid var(--accent);
+               border-radius:10px;margin-bottom:10px;">
+            <span style="font-size:11px;font-weight:700;color:var(--accent2);">✏️ Edit Mode — click anywhere in the preview to edit</span>
+            <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <select id="cover-edit-font" onchange="applySelectionFormat('fontName',this.value,'cover')" style="background:var(--surface3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:4px 8px;font-size:12px;font-family:inherit;">
+                <option value="">Font</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Garamond">Garamond</option>
+              </select>
+              <select id="cover-edit-size" onchange="applySelectionFormat('fontSize',this.value,'cover')" style="background:var(--surface3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:4px 8px;font-size:12px;font-family:inherit;">
+                <option value="">Size</option>
+                <option value="2">10pt</option>
+                <option value="3">12pt</option>
+                <option value="4">14pt</option>
+                <option value="5">18pt</option>
+              </select>
+              <button class="btn-sm" onclick="applySelectionFormat('bold',null,'cover')"><b>B</b></button>
+              <button class="btn-sm" onclick="applySelectionFormat('italic',null,'cover')"><i>I</i></button>
+              <button class="btn-sm" style="background:var(--accent);color:white;border-color:var(--accent);" onclick="saveInlineEdit('cover')">💾 Save</button>
+              <button class="btn-sm" onclick="toggleEditMode('cover', false)">✕ Cancel</button>
+            </div>
+          </div>
+
+          <div id="cover-preview-container" class="hidden"></div>
+          <div class="text-output" id="cover-output" style="display:none"></div>
+
+          <div class="download-row" style="margin-top:10px;">
+            <a id="cover-pdf-link" class="btn-sm" href="#" target="_blank">⬇ Download PDF</a>
+            <button class="btn-sm" onclick="toggleEditMode('cover', true)">✏️ Edit Preview</button>
+            <button class="btn-sm" onclick="toggleRawCover()">🔤 Raw Text</button>
+          </div>
+        </div>
+
+        <!-- Company Fit -->
+        <div class="tab-panel" id="tab-infographic">
+          <!-- Interactive cards (shown when we have data) -->
+          <div id="fit-cards" style="display:none">
+
+            <!-- Score + header -->
+            <div id="fit-header" style="display:flex;align-items:center;gap:20px;margin-bottom:20px;
+                 background:var(--surface2);border-radius:12px;padding:20px 24px;border:1px solid var(--border);">
+              <div id="fit-score-ring" style="flex-shrink:0;text-align:center;">
+                <svg width="80" height="80" viewBox="0 0 80 80">
+                  <circle cx="40" cy="40" r="32" fill="none" stroke="var(--border)" stroke-width="8"/>
+                  <circle id="fit-arc" cx="40" cy="40" r="32" fill="none" stroke="#22c55e" stroke-width="8"
+                    stroke-dasharray="0 201" stroke-dashoffset="50" stroke-linecap="round"
+                    transform="rotate(-90 40 40)" style="transition:stroke-dasharray .8s ease"/>
+                  <text id="fit-score-num" x="40" y="45" text-anchor="middle"
+                    font-size="22" font-weight="bold" fill="white" font-family="inherit">–</text>
+                </svg>
+                <div style="font-size:11px;color:var(--muted);margin-top:4px;">/ 10 Fit</div>
+              </div>
+              <div>
+                <div id="fit-company-name" style="font-size:20px;font-weight:800;margin-bottom:4px;"></div>
+                <div id="fit-role-title" style="font-size:13px;color:var(--muted);"></div>
+              </div>
+            </div>
+
+            <!-- Pros & Cons interactive cards -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+              <div>
+                <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+                   color:#22c55e;margin-bottom:10px;">✅ Pros — Why you're a great fit</p>
+                <div id="pros-list"></div>
+              </div>
+              <div>
+                <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+                   color:#f87171;margin-bottom:10px;">⚠️ Cons — Gaps to address</p>
+                <div id="cons-list"></div>
+              </div>
+            </div>
+
+            <!-- AI Advice -->
+            <div id="advice-card" style="background:linear-gradient(135deg,rgba(124,106,247,0.1),rgba(167,139,250,0.05));
+                 border:1px solid rgba(124,106,247,0.3);border-radius:12px;padding:20px 24px;">
+              <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;
+                 color:var(--accent2);margin-bottom:10px;">💡 Career Coach Advice</p>
+              <p id="advice-text" style="font-size:14px;line-height:1.75;color:var(--text);"></p>
+            </div>
+
+            <div class="download-row" style="margin-top:16px;">
+              <a id="infographic-link" class="btn-sm" href="#" target="_blank">⬇ Download SVG</a>
+            </div>
+          </div>
+
+          <!-- Fallback SVG (hidden, still generated) -->
+          <div id="infographic-container" style="display:none"></div>
+        </div>
+
+        <!-- Compare -->
+        <div class="tab-panel" id="tab-compare">
+          <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Select two drafts to compare their résumés side by side.</p>
+          <div style="display:flex;gap:12px;margin-bottom:16px;align-items:center;flex-wrap:wrap;">
+            <select id="compare-a" style="flex:1;min-width:160px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:9px 12px;font-size:13px;font-family:inherit;"></select>
+            <select id="compare-b" style="flex:1;min-width:160px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:9px 12px;font-size:13px;font-family:inherit;"></select>
+            <button class="btn-sm" onclick="loadCompare()" style="white-space:nowrap;">⚖️ Compare →</button>
+          </div>
+          <!-- Side-by-side headers -->
+          <div id="compare-headers" style="display:none;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px;" class="compare-grid">
+            <div id="compare-label-a" style="font-size:12px;font-weight:700;color:var(--accent2);padding:0 4px;"></div>
+            <div id="compare-label-b" style="font-size:12px;font-weight:700;color:var(--accent2);padding:0 4px;"></div>
+          </div>
+          <!-- Side-by-side previews -->
+          <div id="compare-output" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"></div>
+        </div>
+
+        <hr class="sep" />
+        <button class="btn-sm btn-danger" onclick="deleteCurrent()">🗑 Delete draft</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Manifest</div>
+  <p>Transforming potential into opportunity.</p>
+  <p style="margin-top:8px;font-size:12px;">Built with AI · Your data stays private · Made for job seekers</p>
+</footer>
+
+<script>
+  const API = '';
+  let currentDraftId = null;
+  let selectedTemplate = 'classic';
+  let parsedName = 'Your Name';
+  let parsedContact = '';
+
+  // ── File Upload ───────────────────────────────────────────────────────────
+
+  async function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const status = document.getElementById('upload-status');
+    status.textContent = `⏳ Extracting text from ${file.name}…`;
+    status.style.display = 'block';
+    status.style.color = 'var(--muted)';
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const r = await fetch(`${API}/api/upload-resume`, { method: 'POST', body: formData });
+      const data = await r.json();
+      if (!r.ok) {
+        status.textContent = `❌ ${data.error}`;
+        status.style.color = '#f87171';
+        return;
+      }
+      document.getElementById('candidate').value = data.text;
+      status.textContent = `✅ Extracted from ${file.name}`;
+      status.style.color = '#34d399';
+    } catch (e) {
+      status.textContent = `❌ Upload failed: ${e.message}`;
+      status.style.color = '#f87171';
+    }
+    // Reset input so same file can be re-uploaded
+    event.target.value = '';
+  }
+
+  // ── Template Picker ───────────────────────────────────────────────────────
+
+  function selectTemplate(templateId) {
+    selectedTemplate = templateId;
+    document.querySelectorAll('.template-card').forEach(card => {
+      card.classList.toggle('selected', card.dataset.template === templateId);
+    });
+    // Re-render preview with new template
+    const raw = document.getElementById('resume-output').textContent;
+    if (raw) renderResumePreview(raw, templateId);
+    if (currentDraftId) {
+      document.getElementById('resume-pdf-link').href =
+        `${API}/api/drafts/${currentDraftId}/resume.pdf?template=${templateId}`;
+      const nameEnc = encodeURIComponent(parsedName || '');
+      const contactEnc = encodeURIComponent(parsedContact || '');
+      document.getElementById('cover-pdf-link').href =
+        `${API}/api/drafts/${currentDraftId}/cover_letter.pdf?template=${templateId}&name=${nameEnc}&contact=${contactEnc}`;
+    }
+  }
+
+  // ── Resume HTML Preview ───────────────────────────────────────────────────
+
+  function cleanMd(text) {
+    return text
+      .replace(/■/g, '-')   // black square → hyphen (compound words like hands-on)
+      .replace(/□/g, '')     // white square → remove
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/__(.+?)__/g, '<strong>$1</strong>')
+      .replace(/_(.+?)_/g, '<em>$1</em>')
+      .replace(/`(.+?)`/g, '$1');
+  }
+
+  function stripBlackSquares(text) {
+    return text.replace(/■/g, '-').replace(/□/g, '').replace(/�/g, '');
+  }
+
+  function renderResumePreview(text, template) {
+    const container = document.getElementById('resume-preview-container');
+    container.classList.remove('hidden');
+
+    const lines = text.split('\n').map(l => l.trim()).filter((l,i,a) => l || a[i-1]);
+
+    // Keywords that are definitely NOT names
+    const SECTION_KEYWORDS = /^(summary|experience|education|skills|work|projects|certifications|languages|interests|objective|profile|contact|employment|accomplishments|awards|volunteer|references)/i;
+
+    const isContactLine = s => /[@|]/.test(s) || /\d{3}[-.\s]\d{3,4}/.test(s) ||
+                                /\b(UT|CA|NY|TX|FL|WA|CO|IL|OH|GA|BC|ON)\b/.test(s) ||
+                                /\blinkedin\b/i.test(s) || /\bgithub\b/i.test(s);
+    const isHeadingLine = s => {
+      const clean = s.replace(/^#+\s*/,'').replace(/[■□\*_:]/g,'').trim();
+      return s.startsWith('#') ||
+        (clean === clean.toUpperCase() && clean.length < 55 && /[A-Z]{2}/.test(clean) && SECTION_KEYWORDS.test(clean)) ||
+        (clean.endsWith(':') && clean.length < 40 && SECTION_KEYWORDS.test(clean));
+    };
+    const isBulletLine = s => /^[•\-\*–▸·]/.test(s);
+
+    // Name detection: scan all lines for something that looks like a person's name
+    // (2-4 words, each capitalized, no digits, no section keywords, short)
+    const isNameLike = s => {
+      const c = s.replace(/^#+\s*/,'').replace(/[■□\*_:]/g,'').trim();
+      const words = c.split(/\s+/);
+      return words.length >= 1 && words.length <= 4 &&
+        !isContactLine(c) && !SECTION_KEYWORDS.test(c) && !isBulletLine(s) &&
+        !/\d/.test(c) && c.length >= 3 && c.length < 45 &&
+        words.every(w => /^[A-Z]/.test(w));
+    };
+
+    let name = '', contact = '', sections = [];
+    let currentSection = null;
+    const nonEmpty = lines.filter(l => l);
+
+    // Find name — check first 10 non-empty lines
+    for (const line of nonEmpty.slice(0, 10)) {
+      if (isNameLike(line)) {
+        name = line.replace(/^#+\s*/,'').replace(/[■□\*_]/g,'').trim();
+        break;
+      }
+    }
+    if (!name) name = 'Your Name';
+
+    // Find contact line
+    for (const line of nonEmpty.slice(0, 10)) {
+      const c = line.replace(/[■□]/g,'').trim();
+      if (c !== name && isContactLine(c)) { contact = c; break; }
+    }
+
+    // Save to globals so cover letter can use them
+    parsedName = name;
+    parsedContact = contact;
+
+    // Third pass: build sections
+    for (const line of lines) {
+      const raw = line;
+      if (!raw) { if (currentSection) currentSection.items.push({type:'empty'}); continue; }
+      const cleaned = raw.replace(/^#+\s*/,'').replace(/[■□]/g,'')
+                         .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+                         .replace(/\*(.+?)\*/g,'<em>$1</em>')
+                         .replace(/_(.*?)_/g,'<em>$1</em>')
+                         .replace(/^[•\-–▸·]\s*/,'').trim();
+
+      if (cleaned === name || cleaned === contact) continue;
+      if (isHeadingLine(raw)) {
+        const title = raw.replace(/^#+\s*/,'').replace(/[■□\*_:]/g,'').trim();
+        if (!title) continue;
+        currentSection = {title, items: []};
+        sections.push(currentSection);
+      } else if (currentSection) {
+        const isBullet = isBulletLine(raw);
+        currentSection.items.push({type: isBullet ? 'bullet' : 'body', html: cleaned});
+      }
+    }
+
+    const styles = {
+      classic: `<style>
+        .rp{font-family:Georgia,serif;color:#1a1a1a;padding:40px 48px;background:#fff}
+        .rp-name{font-size:22px;font-weight:bold;text-align:center;margin-bottom:4px}
+        .rp-contact{font-size:11px;text-align:center;color:#555;margin-bottom:12px}
+        .rp-divider{border:none;border-top:1.5px solid #333;margin:6px 0 10px}
+        .rp-sec-rule{border:none;border-top:0.5px solid #aaa;margin:10px 0 4px}
+        .rp-heading{font-size:11px;font-weight:bold;text-transform:uppercase;margin-bottom:4px}
+        .rp-body{font-size:11px;line-height:1.6;margin:2px 0}
+        .rp-bullet{font-size:11px;line-height:1.5;margin:1px 0 1px 16px}
+        .rp-bullet::before{content:"• "}</style>`,
+
+      modern_tech: `<style>
+        .rp{font-family:Arial,sans-serif;color:#0f172a;padding:32px 36px;background:#fff}
+        .rp-name{font-size:24px;font-weight:900;color:#0f172a;margin-bottom:2px}
+        .rp-contact{font-size:10px;color:#64748b;margin-bottom:6px}
+        .rp-accent-line{border:none;border-top:3px solid #4f46e5;margin:0 0 10px}
+        .rp-heading-wrap{background:#eef2ff;padding:4px 8px;margin:12px -8px 5px}
+        .rp-heading{font-size:10px;font-weight:bold;text-transform:uppercase;color:#4f46e5;letter-spacing:.05em}
+        .rp-body{font-size:10.5px;line-height:1.6;margin:2px 0}
+        .rp-bullet{font-size:10.5px;line-height:1.5;margin:1px 0 1px 10px}
+        .rp-bullet::before{content:"▸  ";color:#4f46e5}
+        .rp-divider,.rp-sec-rule{display:none}</style>`,
+
+      multicolumn: `<style>
+        .rp{font-family:Arial,sans-serif;display:flex;background:#fff;min-height:500px}
+        .rp-sidebar{width:190px;min-width:190px;background:#1e293b;padding:24px 16px;color:#fff}
+        .rp-main{flex:1;padding:24px}
+        .rp-name{font-size:16px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:12px}
+        .rp-contact{font-size:9px;color:#cbd5e1;line-height:1.5;margin-bottom:4px}
+        .rp-divider,.rp-accent-line{display:none}
+        .rp-sec-rule{border:none;border-top:0.5px solid #cbd5e1;margin:4px 0}
+        .rp-heading{font-size:9px;font-weight:bold;text-transform:uppercase;color:#38bdf8;letter-spacing:.08em;margin-top:12px;margin-bottom:4px}
+        .rp-heading-wrap{margin:0;padding:0;background:transparent}
+        .rp-body{font-size:10px;line-height:1.6;color:#1a1a2e;margin:2px 0}
+        .rp-bullet{font-size:10px;line-height:1.5;color:#1a1a2e;margin:1px 0 1px 12px}
+        .rp-bullet::before{content:"• "}
+        .sidebar-heading{font-size:9px;font-weight:bold;text-transform:uppercase;color:#38bdf8;margin-top:12px;margin-bottom:4px}
+        .sidebar-body{font-size:9px;color:#cbd5e1;line-height:1.5}</style>`,
+
+      minimalist: `<style>
+        .rp{font-family:Arial,sans-serif;color:#111;padding:44px 52px;background:#fff}
+        .rp-name{font-size:24px;font-weight:900;margin-bottom:3px}
+        .rp-contact{font-size:10px;color:#9ca3af;margin-bottom:10px}
+        .rp-divider{border:none;border-top:0.5px solid #e5e7eb;margin:6px 0}
+        .rp-sec-rule{border:none;border-top:0.5px solid #e5e7eb;margin:4px 0 6px}
+        .rp-heading-wrap{margin-top:14px}
+        .rp-heading{font-size:9px;font-weight:bold;text-transform:uppercase;color:#9ca3af;letter-spacing:.12em;margin-bottom:4px}
+        .rp-body{font-size:11px;line-height:1.7;margin:2px 0}
+        .rp-bullet{font-size:11px;line-height:1.6;margin:1px 0 1px 14px}
+        .rp-bullet::before{content:"—  ";color:#9ca3af}
+        .rp-accent-line{display:none}</style>`,
+
+      executive_banner: `<style>
+        .rp{font-family:Arial,sans-serif;background:#fff}
+        .rp-banner{background:#4a4a4a;display:flex;justify-content:space-between;align-items:center;padding:18px 32px}
+        .rp-name{font-size:20px;font-weight:bold;color:#fff;letter-spacing:1px}
+        .rp-contact{font-size:9px;color:#ddd;text-align:right;line-height:1.6}
+        .rp-body-wrap{padding:20px 32px}
+        .rp-divider,.rp-accent-line{display:none}
+        .rp-sec-rule{border:none;border-top:0.5px solid #ccc;margin:8px 0 4px}
+        .rp-heading-wrap{margin-top:10px}
+        .rp-heading{font-size:10px;font-weight:bold;text-transform:uppercase;color:#333;letter-spacing:.05em;margin-bottom:3px}
+        .rp-body{font-size:10.5px;line-height:1.6;margin:2px 0;color:#1a1a1a}
+        .rp-bullet{font-size:10.5px;line-height:1.5;margin:1px 0 1px 14px;color:#1a1a1a}
+        .rp-bullet::before{content:"• "}</style>`,
+
+      bold_header: `<style>
+        .rp{font-family:Arial,sans-serif;color:#111;padding:36px 40px;background:#fff}
+        .rp-name{font-size:28px;font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+        .rp-divider{border:none;border-top:3px solid #111;margin:4px 0 6px}
+        .rp-contact{font-size:10px;color:#555;margin-bottom:8px}
+        .rp-sec-rule{border:none;border-top:0.5px solid #bbb;margin:6px 0 4px}
+        .rp-accent-line{display:none}
+        .rp-heading-wrap{margin-top:10px}
+        .rp-heading{font-size:11px;font-weight:bold;text-transform:uppercase;color:#111;margin-bottom:2px}
+        .rp-heading-rule{border:none;border-top:1px solid #111;margin:2px 0 5px}
+        .rp-body{font-size:10.5px;line-height:1.6;margin:2px 0}
+        .rp-bullet{font-size:10.5px;line-height:1.5;margin:1px 0 1px 14px}
+        .rp-bullet::before{content:"• "}</style>`,
+
+      split_column: `<style>
+        .rp{font-family:Arial,sans-serif;background:#fff;padding:32px 36px}
+        .rp-header{text-align:center;margin-bottom:12px}
+        .rp-name{font-size:20px;font-weight:bold;color:#1a1a1a;margin-bottom:4px}
+        .rp-divider{border:none;border-top:1px solid #888;margin:4px 0}
+        .rp-contact{font-size:10px;color:#666;margin:4px 0 8px}
+        .rp-sec-rule{border:none;border-top:0.5px solid #ddd;margin:2px 0 4px}
+        .rp-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .rp-accent-line{display:none}
+        .rp-heading-wrap{margin-top:10px}
+        .rp-heading{font-size:10px;font-weight:bold;text-transform:uppercase;color:#333;margin-bottom:3px}
+        .rp-body{font-size:10px;line-height:1.6;margin:2px 0;color:#1a1a1a}
+        .rp-bullet{font-size:10px;line-height:1.5;margin:1px 0 1px 12px;color:#1a1a1a}
+        .rp-bullet::before{content:"• "}</style>`,
+
+      simple_sidebar: `<style>
+        .rp{font-family:Arial,sans-serif;display:flex;background:#fff;min-height:500px}
+        .rp-sidebar{width:170px;min-width:170px;background:#f5f5f5;padding:20px 14px}
+        .rp-main{flex:1;padding:20px 24px}
+        .rp-icon{width:20px;height:20px;background:#111;display:inline-block;margin-bottom:8px}
+        .rp-name{font-size:12px;font-weight:bold;color:#222;margin-bottom:6px;line-height:1.4}
+        .rp-contact{font-size:8.5px;color:#555;line-height:1.5}
+        .rp-divider,.rp-accent-line{display:none}
+        .rp-sec-rule{border:none;border-top:0.5px solid #ccc;margin:6px 0 4px}
+        .rp-heading{font-size:9.5px;font-weight:bold;color:#1a1a1a;margin-top:10px;margin-bottom:3px}
+        .rp-heading-wrap{margin:0;padding:0;background:transparent}
+        .rp-body{font-size:10px;line-height:1.6;color:#1a1a1a;margin:2px 0}
+        .rp-bullet{font-size:10px;line-height:1.5;color:#1a1a1a;margin:1px 0 1px 12px}
+        .rp-bullet::before{content:"• "}
+        .sidebar-heading{font-size:8px;font-weight:bold;text-transform:uppercase;color:#555;margin-top:10px;margin-bottom:3px;letter-spacing:.05em}
+        .sidebar-body{font-size:8.5px;color:#444;line-height:1.5}</style>`,
+
+      professional: `<style>
+        .rp{font-family:Arial,sans-serif;color:#1a1a1a;padding:40px 48px;background:#fff}
+        .rp-name{font-size:20px;font-weight:bold;text-align:center;margin-bottom:4px}
+        .rp-divider{border:none;border-top:1px solid #888;margin:4px 0 5px}
+        .rp-contact{font-size:10px;text-align:center;color:#666;margin-bottom:6px}
+        .rp-sec-rule{border:none;border-top:0.5px solid #ccc;margin:6px 0 4px}
+        .rp-accent-line{border:none;border-top:0.5px solid #ddd;width:60%;margin:0 auto 10px}
+        .rp-heading-wrap{margin-top:10px}
+        .rp-heading{font-size:10.5px;font-weight:bold;color:#1a1a1a;margin-bottom:3px}
+        .rp-body{font-size:10.5px;line-height:1.6;margin:2px 0}
+        .rp-bullet{font-size:10.5px;line-height:1.5;margin:1px 0 1px 14px}
+        .rp-bullet::before{content:"• "}</style>`,
+
+      compact_pro: `<style>
+        .rp{font-family:Arial,sans-serif;color:#111;padding:28px 32px;background:#fff}
+        .rp-name{font-size:15px;font-weight:bold;margin-bottom:2px}
+        .rp-contact{font-size:8.5px;color:#555;margin-bottom:4px}
+        .rp-divider{border:none;border-top:1.5px solid #111;margin:4px 0}
+        .rp-sec-rule{border:none;border-top:0.4px solid #aaa;margin:4px 0 2px}
+        .rp-accent-line{display:none}
+        .rp-heading-wrap{margin-top:6px}
+        .rp-heading{font-size:9px;font-weight:bold;text-transform:uppercase;color:#111;margin-bottom:2px;letter-spacing:.04em}
+        .rp-body{font-size:9px;line-height:1.5;margin:1px 0}
+        .rp-bullet{font-size:9px;line-height:1.4;margin:1px 0 1px 12px}
+        .rp-bullet::before{content:"• "}</style>`,
+    };
+
+    const st = styles[template] || styles.classic;
+    const isMulti = template === 'multicolumn';
+    const isBanner = template === 'executive_banner';
+    const isBold = template === 'bold_header';
+    const isSplit = template === 'split_column';
+    const isSidebar = template === 'simple_sidebar';
+
+    let html = st;
+
+    if (isBanner) {
+      let body = '';
+      for (const sec of sections) {
+        body += `<hr class="rp-sec-rule"><div class="rp-heading-wrap"><div class="rp-heading">${sec.title}</div></div>`;
+        for (const item of sec.items) {
+          if (item.type==='bullet') body += `<div class="rp-bullet">${item.html}</div>`;
+          else if (item.type==='body') body += `<div class="rp-body">${item.html}</div>`;
+          else body += `<div style="height:4px"></div>`;
+        }
+      }
+      html += `<div class="rp"><div class="rp-banner"><div class="rp-name">${name.toUpperCase()}</div><div class="rp-contact">${contact.replace(/[|·]/g,'<br>')}</div></div><div class="rp-body-wrap">${body}</div></div>`;
+    } else if (isBold) {
+      let body = '';
+      for (const sec of sections) {
+        body += `<div class="rp-heading-wrap"><div class="rp-heading">${sec.title}</div><hr class="rp-heading-rule"></div>`;
+        for (const item of sec.items) {
+          if (item.type==='bullet') body += `<div class="rp-bullet">${item.html}</div>`;
+          else if (item.type==='body') body += `<div class="rp-body">${item.html}</div>`;
+          else body += `<div style="height:4px"></div>`;
+        }
+      }
+      html += `<div class="rp"><div class="rp-name">${name}</div><hr class="rp-divider"><div class="rp-contact">${contact}</div><hr class="rp-sec-rule">${body}</div>`;
+    } else if (isSplit) {
+      const half = Math.ceil(sections.length / 2);
+      const leftSecs = sections.slice(0, half);
+      const rightSecs = sections.slice(half);
+      const buildCol = secs => secs.map(sec => {
+        let s = `<hr class="rp-sec-rule"><div class="rp-heading-wrap"><div class="rp-heading">${sec.title}</div></div>`;
+        for (const item of sec.items) {
+          if (item.type==='bullet') s += `<div class="rp-bullet">${item.html}</div>`;
+          else if (item.type==='body') s += `<div class="rp-body">${item.html}</div>`;
+        }
+        return s;
+      }).join('');
+      html += `<div class="rp"><div class="rp-header"><div class="rp-name">${name}</div><hr class="rp-divider"><div class="rp-contact">${contact}</div></div><div class="rp-cols"><div>${buildCol(leftSecs)}</div><div>${buildCol(rightSecs)}</div></div></div>`;
+    } else if (isSidebar) {
+      const sidebarKeys = ['contact','skills','education','certifications','languages','summary'];
+      const sidebarSecs = sections.filter(s => sidebarKeys.some(k => s.title.toLowerCase().includes(k)));
+      const mainSecs = sections.filter(s => !sidebarKeys.some(k => s.title.toLowerCase().includes(k)));
+      let sidebarHtml = `<div class="rp-name">${name}</div><div class="rp-contact">${contact.replace(/[|·]/g,'<br>')}</div>`;
+      for (const sec of sidebarSecs) {
+        sidebarHtml += `<div class="sidebar-heading">${sec.title.toUpperCase()}</div>`;
+        for (const item of sec.items) {
+          if (item.type==='bullet') sidebarHtml += `<div class="sidebar-body">• ${item.html}</div>`;
+          else if (item.type==='body') sidebarHtml += `<div class="sidebar-body">${item.html}</div>`;
+        }
+      }
+      let mainHtml = '';
+      for (const sec of mainSecs) {
+        mainHtml += `<hr class="rp-sec-rule"><div class="rp-heading-wrap"><div class="rp-heading">${sec.title}</div></div>`;
+        for (const item of sec.items) {
+          if (item.type==='bullet') mainHtml += `<div class="rp-bullet">${item.html}</div>`;
+          else if (item.type==='body') mainHtml += `<div class="rp-body">${item.html}</div>`;
+          else mainHtml += `<div style="height:4px"></div>`;
+        }
+      }
+      html += `<div class="rp"><div class="rp-sidebar">${sidebarHtml}</div><div class="rp-main">${mainHtml}</div></div>`;
+    } else if (isMulti) {
+      // Split sections into sidebar vs main
+      const sidebarKeys = ['contact','skills','education','certifications','languages','summary'];
+      const sidebarSections = sections.filter(s => sidebarKeys.some(k => s.title.toLowerCase().includes(k)));
+      const mainSections = sections.filter(s => !sidebarKeys.some(k => s.title.toLowerCase().includes(k)));
+
+      let sidebarHtml = `<div class="rp-name">${name}</div><div class="rp-contact">${contact}</div>`;
+      for (const sec of sidebarSections) {
+        sidebarHtml += `<div class="sidebar-heading">${sec.title.toUpperCase()}</div>`;
+        for (const item of sec.items) {
+          if (item.type === 'bullet') sidebarHtml += `<div class="sidebar-body">• ${item.html}</div>`;
+          else if (item.type === 'body') sidebarHtml += `<div class="sidebar-body">${item.html}</div>`;
+        }
+      }
+
+      let mainHtml = '';
+      for (const sec of mainSections) {
+        mainHtml += `<hr class="rp-sec-rule"><div class="rp-heading-wrap"><div class="rp-heading">${sec.title.toUpperCase()}</div></div>`;
+        for (const item of sec.items) {
+          if (item.type === 'bullet') mainHtml += `<div class="rp-bullet">${item.html}</div>`;
+          else if (item.type === 'body') mainHtml += `<div class="rp-body">${item.html}</div>`;
+          else mainHtml += `<div style="height:4px"></div>`;
+        }
+      }
+
+      html += `<div class="rp"><div class="rp-sidebar">${sidebarHtml}</div><div class="rp-main">${mainHtml}</div></div>`;
+    } else {
+      let body = `<div class="rp-name">${name}</div><div class="rp-contact">${contact}</div><hr class="rp-divider">`;
+      if (template === 'modern_tech') body += `<hr class="rp-accent-line">`;
+
+      for (const sec of sections) {
+        body += `<hr class="rp-sec-rule"><div class="rp-heading-wrap"><div class="rp-heading">${sec.title}</div></div>`;
+        for (const item of sec.items) {
+          if (item.type === 'bullet') body += `<div class="rp-bullet">${item.html}</div>`;
+          else if (item.type === 'body') body += `<div class="rp-body">${item.html}</div>`;
+          else body += `<div style="height:5px"></div>`;
+        }
+      }
+      html += `<div class="rp">${body}</div>`;
+    }
+
+    container.innerHTML = html;
+  }
+
+  // ── ATS Score ────────────────────────────────────────────────────────────
+
+  function renderATSScore(ats) {
+    if (!ats || !ats.score) return;
+    const banner = document.getElementById('ats-banner');
+    banner.style.display = 'block';
+
+    const score = ats.score;
+    const gradeColor = score >= 80 ? '#22c55e' : score >= 65 ? '#f59e0b' : score >= 50 ? '#f97316' : '#ef4444';
+
+    document.getElementById('ats-grade').textContent = ats.grade;
+    document.getElementById('ats-grade').style.color = gradeColor;
+    document.getElementById('ats-score-num').textContent = `${score}%`;
+    document.getElementById('ats-score-num').style.color = gradeColor;
+
+    document.getElementById('ats-matched').innerHTML = (ats.matched || []).map(k =>
+      `<span style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);
+       color:#22c55e;font-size:10px;padding:2px 8px;border-radius:20px;">${k}</span>`
+    ).join('');
+
+    document.getElementById('ats-missing').innerHTML = (ats.missing || []).map(k =>
+      `<span style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);
+       color:#f87171;font-size:10px;padding:2px 8px;border-radius:20px;">${k}</span>`
+    ).join('');
+  }
+
+  // ── Company Fit Cards ─────────────────────────────────────────────────────
+
+  function renderFitCards(fit) {
+    if (!fit) return;
+    document.getElementById('fit-cards').style.display = 'block';
+
+    // Score ring
+    const score = Math.min(Math.max(parseInt(fit.fit_score) || 5, 1), 10);
+    const circumference = 201; // 2 * pi * 32
+    const dash = Math.round((score / 10) * circumference);
+    const scoreColor = score >= 7 ? '#22c55e' : score >= 5 ? '#f59e0b' : '#ef4444';
+    document.getElementById('fit-arc').setAttribute('stroke-dasharray', `${dash} ${circumference}`);
+    document.getElementById('fit-arc').setAttribute('stroke', scoreColor);
+    document.getElementById('fit-score-num').textContent = score;
+    document.getElementById('fit-score-num').setAttribute('fill', scoreColor);
+    document.getElementById('fit-company-name').textContent = fit.company_name || 'Company';
+    document.getElementById('fit-role-title').textContent = fit.role_title || '';
+
+    // Pro tips on hover
+    const proTips = [
+      'Highlight this in your opening paragraph',
+      'Lead with this in your cover letter',
+      'Mention this in your summary section',
+      'Use specific numbers to back this up',
+    ];
+    const conTips = [
+      'Address this proactively in your cover letter',
+      'Consider taking a short course to close this gap',
+      'Show transferable experience that compensates',
+      'Be ready to discuss this in interviews',
+    ];
+
+    const prosList = document.getElementById('pros-list');
+    const consList = document.getElementById('cons-list');
+    prosList.innerHTML = '';
+    consList.innerHTML = '';
+
+    (fit.pros || []).slice(0, 4).forEach((p, i) => {
+      prosList.innerHTML += `
+        <div class="fit-card pro">
+          <span>✅ ${p}</span>
+          <div class="card-tip">💡 ${proTips[i % proTips.length]}</div>
+        </div>`;
+    });
+    (fit.cons || []).slice(0, 4).forEach((c, i) => {
+      consList.innerHTML += `
+        <div class="fit-card con">
+          <span>⚠️ ${c}</span>
+          <div class="card-tip">🎯 ${conTips[i % conTips.length]}</div>
+        </div>`;
+    });
+
+    // Advice
+    if (fit.advice) {
+      document.getElementById('advice-text').textContent = fit.advice;
+      document.getElementById('advice-card').style.display = 'block';
+    } else {
+      document.getElementById('advice-card').style.display = 'none';
+    }
+  }
+
+  function toggleRawResume() {
+    const raw = document.getElementById('resume-output');
+    const preview = document.getElementById('resume-preview-container');
+    const isRaw = raw.style.display !== 'none';
+    raw.style.display = isRaw ? 'none' : 'block';
+    preview.classList.toggle('hidden', !isRaw);
+  }
+
+  function toggleRawCover() {
+    const raw = document.getElementById('cover-output');
+    const preview = document.getElementById('cover-preview-container');
+    const isRaw = raw.style.display !== 'none';
+    raw.style.display = isRaw ? 'none' : 'block';
+    preview.classList.toggle('hidden', !isRaw);
+  }
+
+  // ── Cover Letter Preview ──────────────────────────────────────────────────
+
+  function renderCoverPreview(text, template) {
+    const container = document.getElementById('cover-preview-container');
+    container.classList.remove('hidden');
+
+    const templateStyles = {
+      classic: { font: 'Georgia, serif', accent: '#1a1a1a', headerBorder: '1.5px solid #333', bg: '#fff' },
+      modern_tech: { font: 'Arial, sans-serif', accent: '#4f46e5', headerBorder: '3px solid #4f46e5', bg: '#fff' },
+      multicolumn: { font: 'Arial, sans-serif', accent: '#1e293b', headerBorder: '2px solid #1e293b', bg: '#fff' },
+      minimalist: { font: 'Arial, sans-serif', accent: '#9ca3af', headerBorder: '0.5px solid #e5e7eb', bg: '#fff' },
+    };
+    const ts = templateStyles[template] || templateStyles.classic;
+
+    // Clean markdown
+    const cleaned = text
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/_(.+?)_/g, '<em>$1</em>')
+      .replace(/[■□]/g, '');
+
+    const paragraphs = cleaned.split(/\n\n+/).map(p => p.replace(/\n/g,' ').trim()).filter(Boolean);
+
+    let html = `
+      <div style="font-family:${ts.font};background:${ts.bg};padding:48px 56px;color:#1a1a1a;max-width:100%;">
+        <div style="border-bottom:${ts.headerBorder};padding-bottom:16px;margin-bottom:28px;">
+          <div style="font-size:18px;font-weight:bold;color:${ts.accent};">${parsedName || 'Your Name'}</div>
+          <div style="font-size:11px;color:#666;margin-top:4px;">${parsedContact || ''}</div>
+        </div>`;
+
+    paragraphs.forEach(p => {
+      html += `<p style="font-size:11.5px;line-height:1.8;margin-bottom:16px;color:#1a1a1a;">${p}</p>`;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+  }
+
+
+  function scrollToApp() {
+    document.getElementById('app-section').scrollIntoView({ behavior: 'smooth' });
+  }
+  function scrollToAbout() {
+    document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  async function boot() {
+    try {
+      const r = await fetch(`${API}/api/health`);
+      const d = await r.json();
+      document.getElementById('backend-label').textContent = d.llm_backend;
+    } catch { document.getElementById('backend-label').textContent = 'offline'; }
+    await loadDraftList();
+  }
+
+  async function loadDraftList() {
+    const r = await fetch(`${API}/api/drafts`);
+    const drafts = await r.json();
+    const el = document.getElementById('draft-list');
+    if (!drafts.length) {
+      el.innerHTML = '<p style="padding:16px;font-size:12px;color:var(--muted)">No drafts yet.</p>';
+      return;
+    }
+    el.innerHTML = drafts.map(d => `
+      <div class="draft-item ${d.id === currentDraftId ? 'active' : ''}" onclick="loadDraft(${d.id})">
+        <div class="title">${d.job_title}</div>
+        <div class="date">${new Date(d.updated_at).toLocaleDateString()}</div>
+      </div>
+    `).join('');
+    ['compare-a','compare-b'].forEach(id => {
+      document.getElementById(id).innerHTML = drafts.map(d =>
+        `<option value="${d.id}">${d.job_title}</option>`
+      ).join('');
+    });
+  }
+
+  function newDraft() {
+    currentDraftId = null;
+    document.getElementById('job-title').value = '';
+    document.getElementById('job-desc').value = '';
+    document.getElementById('candidate').value = '';
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('error-msg').style.display = 'none';
+    document.querySelectorAll('.draft-item').forEach(el => el.classList.remove('active'));
+    scrollToApp();
+  }
+
+  async function loadDraft(id) {
+    const r = await fetch(`${API}/api/drafts/${id}`);
+    const draft = await r.json();
+    currentDraftId = id;
+    document.getElementById('job-title').value = draft.job_title;
+    document.getElementById('job-desc').value = draft.job_description;
+    document.getElementById('candidate').value = draft.candidate_profile;
+    if (draft.resume_text || draft.cover_letter_text) {
+      showResults(id, draft.resume_text, draft.cover_letter_text, draft.company_fit);
+    } else {
+      document.getElementById('results').style.display = 'none';
+    }
+    await loadDraftList();
+    scrollToApp();
+  }
+
+  async function generate() {
+    const jobTitle = document.getElementById('job-title').value.trim() || 'Untitled Job';
+    const jobDesc = document.getElementById('job-desc').value.trim();
+    const candidate = document.getElementById('candidate').value.trim();
+    const errEl = document.getElementById('error-msg');
+    errEl.style.display = 'none';
+
+    if (!jobDesc || !candidate) {
+      errEl.textContent = 'Please fill in both the job description and your profile.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const btn = document.getElementById('generate-btn');
+    const loading = document.getElementById('loading');
+    btn.disabled = true;
+    loading.style.display = 'flex';
+
+    try {
+      const r = await fetch(`${API}/api/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ job_title: jobTitle, job_description: jobDesc, candidate_profile: candidate }),
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        errEl.textContent = data.error || 'Generation failed.';
+        errEl.style.display = 'block';
+        return;
+      }
+      currentDraftId = data.draft_id;
+      showResults(data.draft_id, data.resume_text, data.cover_letter_text, data.company_fit, data.ats_score);
+      await loadDraftList();
+    } catch (e) {
+      errEl.textContent = `Network error: ${e.message}`;
+      errEl.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      loading.style.display = 'none';
+    }
+  }
+
+  function showResults(draftId, resumeText, coverText, companyFit, atsScore) {
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('resume-output').textContent = stripBlackSquares(resumeText || '');
+    document.getElementById('cover-output').textContent = stripBlackSquares(coverText || '');
+    if (resumeText) renderResumePreview(stripBlackSquares(resumeText), selectedTemplate);
+    if (coverText) renderCoverPreview(stripBlackSquares(coverText), selectedTemplate);
+    if (atsScore) renderATSScore(atsScore);
+    document.getElementById('resume-pdf-link').href = `${API}/api/drafts/${draftId}/resume.pdf?template=${selectedTemplate}`;
+    const nameEnc = encodeURIComponent(parsedName || '');
+    const contactEnc = encodeURIComponent(parsedContact || '');
+    document.getElementById('cover-pdf-link').href = `${API}/api/drafts/${draftId}/cover_letter.pdf?template=${selectedTemplate}&name=${nameEnc}&contact=${contactEnc}`;
+    document.getElementById('infographic-link').href = `${API}/api/drafts/${draftId}/infographic.svg`;
+    if (companyFit) {
+      renderFitCards(companyFit);
+      fetch(`${API}/api/drafts/${draftId}/infographic.svg`)
+        .then(r => r.text())
+        .then(svg => { document.getElementById('infographic-container').innerHTML = svg; });
+    }
+  }
+
+  function switchTab(name) {
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      const tabs = ['resume','cover','infographic','compare'];
+      t.classList.toggle('active', tabs[i] === name);
+    });
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(`tab-${name}`).classList.add('active');
+  }
+
+  // ── Inline contenteditable editing ───────────────────────────────────────
+
+  function toggleEditMode(type, on) {
+    const previewId = type === 'resume' ? 'resume-preview-container' : 'cover-preview-container';
+    const toolbarId = type === 'resume' ? 'resume-toolbar' : 'cover-toolbar';
+    const preview = document.getElementById(previewId);
+    const toolbar = document.getElementById(toolbarId);
+
+    preview.contentEditable = on ? 'true' : 'false';
+    toolbar.style.display = on ? 'flex' : 'none';
+
+    if (on) {
+      preview.style.outline = '2px solid var(--accent)';
+      preview.style.borderRadius = '10px';
+      preview.focus();
+    } else {
+      preview.style.outline = '';
+    }
+  }
+
+  function applySelectionFormat(cmd, value) {
+    document.execCommand(cmd, false, value || null);
+  }
+
+  async function saveInlineEdit(type) {
+    if (!currentDraftId) return;
+    const previewId = type === 'resume' ? 'resume-preview-container' : 'cover-preview-container';
+    const preview = document.getElementById(previewId);
+    const field = type === 'resume' ? 'resume_text' : 'cover_letter_text';
+    const outputEl = document.getElementById(type === 'resume' ? 'resume-output' : 'cover-output');
+
+    // Extract plain text from the preview for storage
+    const newText = preview.innerText;
+    outputEl.textContent = newText;
+
+    await fetch(`${API}/api/drafts/${currentDraftId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ [field]: newText }),
+    });
+
+    toggleEditMode(type, false);
+
+    // Show saved flash
+    const btn = document.querySelector(`#${type === 'resume' ? 'resume' : 'cover'}-toolbar .btn-sm[style*="accent"]`);
+    if (btn) { btn.textContent = '✅ Saved!'; setTimeout(() => btn.textContent = '💾 Save', 1500); }
+  }
+
+  async function deleteCurrent() {
+    if (!currentDraftId || !confirm('Delete this draft?')) return;
+    await fetch(`${API}/api/drafts/${currentDraftId}`, { method: 'DELETE' });
+    newDraft();
+    await loadDraftList();
+  }
+
+  async function loadCompare() {
+    const a = document.getElementById('compare-a').value;
+    const b = document.getElementById('compare-b').value;
+    if (!a || !b) return;
+
+    const [rA, rB] = await Promise.all([
+      fetch(`${API}/api/drafts/${a}`).then(r => r.json()),
+      fetch(`${API}/api/drafts/${b}`).then(r => r.json()),
+    ]);
+
+    // Show labels
+    const headers = document.getElementById('compare-headers');
+    headers.style.display = 'grid';
+    document.getElementById('compare-label-a').textContent = `Draft A: ${rA.job_title}`;
+    document.getElementById('compare-label-b').textContent = `Draft B: ${rB.job_title}`;
+
+    // Render both resume previews inline
+    const out = document.getElementById('compare-output');
+
+    // Build a mini preview for each (scale it down)
+    const buildMiniPreview = (draft) => {
+      if (!draft.resume_text) return '<div style="padding:20px;color:var(--muted);font-size:12px;">No résumé generated yet.</div>';
+      // Get first 1500 chars of resume for preview
+      const preview = draft.resume_text.slice(0, 2000);
+      const lines = preview.split('\n').map(l => {
+        const t = l.trim();
+        if (!t) return '<div style="height:5px"></div>';
+        if (t === t.toUpperCase() && t.length < 50 && t.length > 2)
+          return `<div style="font-weight:bold;font-size:10px;border-bottom:0.5px solid #ccc;margin:8px 0 3px;padding-bottom:2px;color:#1a1a1a">${t}</div>`;
+        if (/^[•\-–▸]/.test(t))
+          return `<div style="font-size:10px;line-height:1.5;color:#333;margin-left:10px">• ${t.replace(/^[•\-–▸]\s*/,'')}</div>`;
+        return `<div style="font-size:10px;line-height:1.5;color:#333">${t}</div>`;
+      }).join('');
+
+      return `<div style="background:#fff;border-radius:8px;padding:16px;font-family:Arial,sans-serif;
+               height:480px;overflow-y:auto;overflow-x:hidden;border:1px solid #e5e7eb;word-break:break-word;">
+        ${lines}
+        ${draft.resume_text.length > 2000 ? '<div style="font-size:10px;color:#9ca3af;margin-top:8px;text-align:center;">— scroll for more —</div>' : ''}
+      </div>`;
+    };
+
+    out.innerHTML = `
+      <div>${buildMiniPreview(rA)}</div>
+      <div>${buildMiniPreview(rB)}</div>
+    `;
+
+    // ATS comparison row
+    if (rA.company_fit || rB.company_fit) {
+      const scoreA = rA.company_fit?.fit_score ?? '–';
+      const scoreB = rB.company_fit?.fit_score ?? '–';
+      out.innerHTML += `
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 16px;border:1px solid var(--border);">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Company Fit Score</div>
+          <div style="font-size:24px;font-weight:800;color:${scoreA>=7?'#22c55e':scoreA>=5?'#f59e0b':'#ef4444'}">${scoreA}/10</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:8px;padding:12px 16px;border:1px solid var(--border);">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">Company Fit Score</div>
+          <div style="font-size:24px;font-weight:800;color:${scoreB>=7?'#22c55e':scoreB>=5?'#f59e0b':'#ef4444'}">${scoreB}/10</div>
+        </div>`;
+    }
+  }
+
+  boot();
+</script>
+</body>
+</html>
