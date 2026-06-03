@@ -4,7 +4,7 @@
 
 Paste a job description + your profile → get a tailored résumé PDF, cover letter PDF, and company-fit infographic — powered by AI.
 
-**Live demo:** *(add your Render URL here after deploying)*
+**Live demo:** https://manifest-studio.onrender.com
 
 ---
 
