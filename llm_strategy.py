@@ -63,15 +63,28 @@ class OllamaStrategy(LLMStrategy):
         self.api_key = os.getenv("OLLAMA_API_KEY", "")  # required for class endpoint
 
     def generate(self, system_prompt: str, user_prompt: str) -> str:
-        # ollama.com hosted API uses /api/generate; self-hosted uses /api/chat
-        hosted = "ollama.com" in self.base_url
-        if hosted:
-            url = f"{self.base_url}/api/generate"
+        headers = {"Content-Type": "application/json"}
+        if self.api_key:
+            headers["Authorization"] = f"Bearer {self.api_key}"
+
+        # ollama.com cloud uses OpenAI-compatible /v1/chat/completions.
+        # NOTE: the host is "ollama.com", not "api.ollama.com" — the latter
+        # 301-redirects to this host, and requests drops the Authorization
+        # header across that cross-host redirect, breaking auth.
+        # Self-hosted local Ollama uses /api/chat instead.
+        if "ollama.com" in self.base_url:
+            url = f"{self.base_url}/v1/chat/completions"
             payload = {
                 "model": self.model,
-                "prompt": f"{system_prompt}\n\n{user_prompt}",
-                "stream": False,
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+                "max_tokens": 4096,
             }
+            resp = requests.post(url, headers=headers, json=payload, timeout=120)
+            resp.raise_for_status()
+            return resp.json()["choices"][0]["message"]["content"]
         else:
             url = f"{self.base_url}/api/chat"
             payload = {
@@ -82,16 +95,9 @@ class OllamaStrategy(LLMStrategy):
                     {"role": "user", "content": user_prompt},
                 ],
             }
-
-        headers = {"Content-Type": "application/json"}
-        if self.api_key:
-            headers["Authorization"] = f"Bearer {self.api_key}"
-
-        resp = requests.post(url, headers=headers, json=payload, timeout=120)
-        resp.raise_for_status()
-        data = resp.json()
-        # ollama.com /api/generate returns "response"; self-hosted /api/chat returns message.content
-        return data.get("response") or data["message"]["content"]
+            resp = requests.post(url, headers=headers, json=payload, timeout=120)
+            resp.raise_for_status()
+            return resp.json()["message"]["content"]
 
 
 # ── Concrete Strategy 3: Groq ────────────────────────────────────────────────

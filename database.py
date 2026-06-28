@@ -29,10 +29,29 @@ def init_db():
                 resume_text TEXT,
                 cover_letter_text TEXT,
                 company_fit TEXT,   -- JSON string
+                ats_score   TEXT,   -- JSON string
+                current_state TEXT NOT NULL DEFAULT 'IDLE',
                 created_at  TEXT    NOT NULL,
                 updated_at  TEXT    NOT NULL
             )
         """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS audit_log (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                draft_id    INTEGER NOT NULL,
+                event_type  TEXT NOT NULL,
+                from_state  TEXT,
+                to_state    TEXT,
+                payload     TEXT,  -- JSON string
+                created_at  TEXT NOT NULL,
+                FOREIGN KEY (draft_id) REFERENCES drafts(id)
+            )
+        """)
+        # Migrate drafts tables created before Sprint 2 (missing new columns)
+        existing_cols = {row[1] for row in conn.execute("PRAGMA table_info(drafts)")}
+        for col, ddl in (("ats_score", "TEXT"), ("current_state", "TEXT NOT NULL DEFAULT 'IDLE'")):
+            if col not in existing_cols:
+                conn.execute(f"ALTER TABLE drafts ADD COLUMN {col} {ddl}")
         conn.commit()
 
 
@@ -61,11 +80,14 @@ def update_draft(draft_id: int, **kwargs):
     """Update any subset of fields on an existing draft."""
     allowed = {
         "job_title", "job_description", "candidate_profile",
-        "resume_text", "cover_letter_text", "company_fit"
+        "resume_text", "cover_letter_text", "company_fit", "ats_score",
+        "current_state",
     }
     fields = {k: v for k, v in kwargs.items() if k in allowed}
     if "company_fit" in fields and isinstance(fields["company_fit"], dict):
         fields["company_fit"] = json.dumps(fields["company_fit"])
+    if "ats_score" in fields and isinstance(fields["ats_score"], dict):
+        fields["ats_score"] = json.dumps(fields["ats_score"])
     if not fields:
         return
 
@@ -96,6 +118,8 @@ def get_draft(draft_id: int) -> dict | None:
     d = dict(row)
     if d.get("company_fit"):
         d["company_fit"] = json.loads(d["company_fit"])
+    if d.get("ats_score"):
+        d["ats_score"] = json.loads(d["ats_score"])
     return d
 
 
@@ -103,3 +127,35 @@ def delete_draft(draft_id: int):
     with get_conn() as conn:
         conn.execute("DELETE FROM drafts WHERE id=?", (draft_id,))
         conn.commit()
+
+
+# ── Audit trail ──────────────────────────────────────────────────────────────
+
+def record_audit_event(draft_id: int, event_type: str, from_state: str = None,
+                        to_state: str = None, payload: dict = None):
+    now = datetime.utcnow().isoformat()
+    with get_conn() as conn:
+        conn.execute(
+            """INSERT INTO audit_log
+               (draft_id, event_type, from_state, to_state, payload, created_at)
+               VALUES (?,?,?,?,?,?)""",
+            (draft_id, event_type, from_state, to_state,
+             json.dumps(payload) if payload else None, now)
+        )
+        conn.commit()
+
+
+def get_audit_log(draft_id: int) -> list[dict]:
+    """Return the full, append-only mutation history for a draft, oldest first."""
+    with get_conn() as conn:
+        rows = conn.execute(
+            "SELECT * FROM audit_log WHERE draft_id=? ORDER BY created_at ASC",
+            (draft_id,)
+        ).fetchall()
+    out = []
+    for row in rows:
+        d = dict(row)
+        if d.get("payload"):
+            d["payload"] = json.loads(d["payload"])
+        out.append(d)
+    return out

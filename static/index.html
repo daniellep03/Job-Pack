@@ -1108,6 +1108,13 @@
         <div id="error-msg"></div>
         <div id="loading"><div class="spinner"></div> Generating your application — this may take 30–60 seconds…</div>
 
+        <div id="progress-panel" style="display:none;margin-bottom:16px;background:var(--surface2);
+             border:1px solid var(--border);border-radius:12px;padding:14px 18px;">
+          <div style="font-size:11px;font-weight:700;color:var(--accent2);text-transform:uppercase;
+               letter-spacing:.06em;margin-bottom:8px;">⚡ Live progress (WebSocket)</div>
+          <div id="progress-steps" style="display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted);"></div>
+        </div>
+
         <button class="btn-generate" id="generate-btn" onclick="generate()">
           ✦ Generate My Application
         </button>
@@ -1122,6 +1129,7 @@
           <button class="tab" onclick="switchTab('cover')">✉️ Cover Letter</button>
           <button class="tab" onclick="switchTab('infographic')">📊 Company Fit</button>
           <button class="tab" onclick="switchTab('compare')">⚖️ Compare</button>
+          <button class="tab" onclick="switchTab('history')">🕒 History</button>
         </div>
 
         <!-- Résumé -->
@@ -1195,6 +1203,7 @@
             <a id="resume-pdf-link" class="btn-sm" href="#" target="_blank">⬇ Download PDF</a>
             <button class="btn-sm" onclick="toggleEditMode('resume', true)">✏️ Edit Preview</button>
             <button class="btn-sm" onclick="toggleRawResume()">🔤 Raw Text</button>
+            <button class="btn-sm" onclick="regenerate('resume')">🔁 Regenerate Résumé</button>
           </div>
         </div>
 
@@ -1233,6 +1242,7 @@
             <a id="cover-pdf-link" class="btn-sm" href="#" target="_blank">⬇ Download PDF</a>
             <button class="btn-sm" onclick="toggleEditMode('cover', true)">✏️ Edit Preview</button>
             <button class="btn-sm" onclick="toggleRawCover()">🔤 Raw Text</button>
+            <button class="btn-sm" onclick="regenerate('cover_letter')">🔁 Regenerate Cover Letter</button>
           </div>
         </div>
 
@@ -1285,6 +1295,7 @@
 
             <div class="download-row" style="margin-top:16px;">
               <a id="infographic-link" class="btn-sm" href="#" target="_blank">⬇ Download SVG</a>
+              <button class="btn-sm" onclick="regenerate('company_fit')">🔁 Regenerate Company Fit</button>
             </div>
           </div>
 
@@ -1309,6 +1320,14 @@
           <div id="compare-output" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;"></div>
         </div>
 
+        <!-- History (audit trail) -->
+        <div class="tab-panel" id="tab-history">
+          <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">
+            Every state transition and generation step for this draft, reconstructed from the audit log.
+          </p>
+          <div id="history-timeline"></div>
+        </div>
+
         <hr class="sep" />
         <button class="btn-sm btn-danger" onclick="deleteCurrent()">🗑 Delete draft</button>
       </div>
@@ -1323,12 +1342,63 @@
   <p style="margin-top:8px;font-size:12px;">Built with AI · Your data stays private · Made for job seekers</p>
 </footer>
 
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <script>
   const API = '';
   let currentDraftId = null;
   let selectedTemplate = 'classic';
   let parsedName = 'Your Name';
   let parsedContact = '';
+
+  // ── WebSocket (EIP Publish-Subscribe transport) ──────────────────────────
+
+  const STEP_LABELS = {
+    resume: '📄 Generating résumé',
+    humanize: '🧑 Humanizing résumé',
+    ats: '🎯 Scoring ATS keywords',
+    cover_letter: '✉️ Generating cover letter',
+    company_fit: '📊 Generating company fit',
+  };
+
+  let socket = null;
+  let joinedDraftId = null;
+
+  function ensureSocket(draftId) {
+    if (!socket) {
+      socket = io();
+      socket.on('state_changed', data => updateProgress(data));
+      socket.on('step_complete', data => updateProgress(data, true));
+      socket.on('generation_error', data => {
+        const errEl = document.getElementById('error-msg');
+        errEl.textContent = `Generation failed at ${data.step || 'a step'}: ${data.message}`;
+        errEl.style.display = 'block';
+      });
+    }
+    if (joinedDraftId !== draftId) {
+      socket.emit('join_draft', { draft_id: draftId });
+      joinedDraftId = draftId;
+    }
+  }
+
+  function resetProgressPanel() {
+    const panel = document.getElementById('progress-panel');
+    const steps = document.getElementById('progress-steps');
+    steps.innerHTML = '';
+    panel.style.display = 'block';
+  }
+
+  function updateProgress(data, isStepComplete) {
+    const steps = document.getElementById('progress-steps');
+    const line = document.createElement('div');
+    if (isStepComplete) {
+      line.textContent = `✅ ${STEP_LABELS[data.step] || data.step} — done`;
+      line.style.color = '#34d399';
+    } else {
+      line.textContent = `→ ${data.to_state}`;
+      line.style.color = 'var(--muted)';
+    }
+    steps.appendChild(line);
+  }
 
   // ── File Upload ───────────────────────────────────────────────────────────
 
@@ -1920,11 +1990,12 @@
     const r = await fetch(`${API}/api/drafts/${id}`);
     const draft = await r.json();
     currentDraftId = id;
+    ensureSocket(id);
     document.getElementById('job-title').value = draft.job_title;
     document.getElementById('job-desc').value = draft.job_description;
     document.getElementById('candidate').value = draft.candidate_profile;
     if (draft.resume_text || draft.cover_letter_text) {
-      showResults(id, draft.resume_text, draft.cover_letter_text, draft.company_fit);
+      showResults(id, draft.resume_text, draft.cover_letter_text, draft.company_fit, draft.ats_score);
     } else {
       document.getElementById('results').style.display = 'none';
     }
@@ -1949,12 +2020,31 @@
     const loading = document.getElementById('loading');
     btn.disabled = true;
     loading.style.display = 'flex';
+    resetProgressPanel();
 
     try {
-      const r = await fetch(`${API}/api/generate`, {
+      // Step 1: create the draft so we have an ID to join over WebSocket
+      // before any generation runs.
+      const createR = await fetch(`${API}/api/drafts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ job_title: jobTitle, job_description: jobDesc, candidate_profile: candidate }),
+      });
+      const createData = await createR.json();
+      if (!createR.ok) {
+        errEl.textContent = createData.error || 'Could not create draft.';
+        errEl.style.display = 'block';
+        return;
+      }
+      currentDraftId = createData.draft_id;
+      ensureSocket(currentDraftId);
+
+      // Step 2: run the pipeline. Progress arrives over the socket while
+      // this request is still in flight — no polling needed.
+      const r = await fetch(`${API}/api/drafts/${currentDraftId}/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ regen_target: 'full' }),
       });
       const data = await r.json();
       if (!r.ok) {
@@ -1962,7 +2052,6 @@
         errEl.style.display = 'block';
         return;
       }
-      currentDraftId = data.draft_id;
       showResults(data.draft_id, data.resume_text, data.cover_letter_text, data.company_fit, data.ats_score);
       await loadDraftList();
     } catch (e) {
@@ -1972,6 +2061,56 @@
       btn.disabled = false;
       loading.style.display = 'none';
     }
+  }
+
+  async function regenerate(target) {
+    if (!currentDraftId) return;
+    const errEl = document.getElementById('error-msg');
+    errEl.style.display = 'none';
+    resetProgressPanel();
+    ensureSocket(currentDraftId);
+
+    try {
+      const r = await fetch(`${API}/api/drafts/${currentDraftId}/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ regen_target: target }),
+      });
+      const data = await r.json();
+      if (!r.ok) {
+        errEl.textContent = data.error || 'Regeneration failed.';
+        errEl.style.display = 'block';
+        return;
+      }
+      showResults(data.draft_id, data.resume_text, data.cover_letter_text, data.company_fit, data.ats_score);
+      await loadDraftList();
+    } catch (e) {
+      errEl.textContent = `Network error: ${e.message}`;
+      errEl.style.display = 'block';
+    }
+  }
+
+  async function loadHistory(draftId) {
+    const el = document.getElementById('history-timeline');
+    if (!draftId) { el.innerHTML = '<p style="font-size:12px;color:var(--muted);">No draft selected yet.</p>'; return; }
+    const r = await fetch(`${API}/api/drafts/${draftId}/audit`);
+    const events = await r.json();
+    if (!events.length) {
+      el.innerHTML = '<p style="font-size:12px;color:var(--muted);">No history yet — generate something first.</p>';
+      return;
+    }
+    el.innerHTML = events.map(e => {
+      const time = new Date(e.created_at + 'Z').toLocaleTimeString();
+      let label = e.event_type;
+      if (label === 'state_changed') label = `${e.from_state || '–'} → ${e.to_state}`;
+      else if (label.startsWith('step_complete:')) label = `Step complete: ${label.split(':')[1]}`;
+      else if (label === 'downloaded') label = `Downloaded ${e.payload?.file || 'file'}`;
+      else if (label === 'generation_error') label = `Error: ${e.payload?.message || 'unknown'}`;
+      return `<div class="fit-card" style="display:flex;justify-content:space-between;gap:12px;">
+                <span>${label}</span>
+                <span style="color:var(--muted);font-size:11px;flex-shrink:0;">${time}</span>
+              </div>`;
+    }).join('');
   }
 
   function showResults(draftId, resumeText, coverText, companyFit, atsScore) {
@@ -1996,11 +2135,12 @@
 
   function switchTab(name) {
     document.querySelectorAll('.tab').forEach((t, i) => {
-      const tabs = ['resume','cover','infographic','compare'];
+      const tabs = ['resume','cover','infographic','compare','history'];
       t.classList.toggle('active', tabs[i] === name);
     });
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
     document.getElementById(`tab-${name}`).classList.add('active');
+    if (name === 'history') loadHistory(currentDraftId);
   }
 
   // ── Inline contenteditable editing ───────────────────────────────────────

@@ -185,30 +185,65 @@ def generate_company_fit(llm: LLMStrategy) -> Filter:
 class Pipeline:
     """
     Pipes-and-Filters pipeline.
-    Add filters in order; run() threads the payload through each one.
+    Add named filters in order; run() threads the payload through each one
+    and optionally calls on_step(name, payload) after each one completes —
+    that's the only hook the messaging layer (event_bus.py) needs, so this
+    class still has zero knowledge of WebSockets, the audit log, or the
+    state machine.
     """
 
     def __init__(self):
-        self._filters: list[Filter] = []
+        self._filters: list[tuple[str, Filter]] = []
 
-    def add(self, f: Filter) -> "Pipeline":
-        self._filters.append(f)
+    def add(self, name: str, f: Filter) -> "Pipeline":
+        self._filters.append((name, f))
         return self  # fluent API
 
-    def run(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        for f in self._filters:
+    def run(self, payload: Dict[str, Any], on_step: Callable[[str, Dict[str, Any]], None] = None) -> Dict[str, Any]:
+        for name, f in self._filters:
             payload = f(payload)
+            if on_step:
+                on_step(name, payload)
         return payload
 
 
-def build_pipeline(llm: LLMStrategy) -> Pipeline:
-    """Construct the standard generation pipeline."""
-    return (
-        Pipeline()
-        .add(validate_inputs)
-        .add(generate_resume(llm))
-        .add(humanize_resume(llm))   # Makes resume human & standout
-        .add(score_ats)              # ATS keyword scoring (no LLM)
-        .add(generate_cover_letter(llm))
-        .add(generate_company_fit(llm))
-    )
+# Which payload field(s) each step mutates — lets the audit trail snapshot
+# the actual resulting content per step, not just the step's name and
+# timestamp. That's what makes a past draft state fully reconstructable
+# instead of just a timing log.
+STEP_OUTPUT_FIELDS: Dict[str, list] = {
+    "resume": ["resume_text"],
+    "humanize": ["resume_text"],
+    "ats": ["ats_score"],
+    "cover_letter": ["cover_letter_text"],
+    "company_fit": ["company_fit"],
+}
+
+
+# Registry of generation steps, keyed by the names router.py hands back.
+def _step_registry(llm: LLMStrategy) -> Dict[str, Filter]:
+    return {
+        "resume": generate_resume(llm),
+        "humanize": humanize_resume(llm),
+        "ats": score_ats,
+        "cover_letter": generate_cover_letter(llm),
+        "company_fit": generate_company_fit(llm),
+    }
+
+
+def build_pipeline(llm: LLMStrategy, filter_names: list[str] = None) -> Pipeline:
+    """
+    Construct the generation pipeline from filter_names (Message Router
+    output) — defaults to the full chain for backward compatibility.
+    validate_inputs is deliberately not part of this pipeline: the state
+    machine treats validation as its own VALIDATING state, run once up
+    front by the caller, before any generation step is selected.
+    """
+    names = filter_names if filter_names is not None else [
+        "resume", "humanize", "ats", "cover_letter", "company_fit"
+    ]
+    registry = _step_registry(llm)
+    pipeline = Pipeline()
+    for name in names:
+        pipeline.add(name, registry[name])
+    return pipeline
