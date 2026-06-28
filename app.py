@@ -6,13 +6,6 @@ Perfect Framework concerns addressed:
   - Deploy: single-process app, Procfile included for cloud deploy
 """
 
-# Must happen before any other import (especially `requests`/`socket`) —
-# without this, a blocking LLM HTTP call freezes eventlet's entire event
-# loop and the WebSocket layer can't service any other connection while
-# generation is in flight.
-import eventlet
-eventlet.monkey_patch()
-
 import os
 import json
 from flask import Flask, request, jsonify, send_file, send_from_directory
@@ -334,4 +327,7 @@ def serve_frontend(path):
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
     debug = os.getenv("FLASK_DEBUG", "false").lower() == "true"
-    socketio.run(app, host="0.0.0.0", port=port, debug=debug)
+    # allow_unsafe_werkzeug: this is a single low-traffic class demo, not a
+    # public production service — Werkzeug's dev server is fine here, and
+    # it avoids eventlet's monkey-patching issues entirely (see sockets.py).
+    socketio.run(app, host="0.0.0.0", port=port, debug=debug, allow_unsafe_werkzeug=True)

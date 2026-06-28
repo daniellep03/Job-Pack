@@ -10,7 +10,13 @@ from flask_socketio import SocketIO, join_room
 
 from event_bus import EventBus
 
-socketio = SocketIO(cors_allowed_origins="*")
+# async_mode="threading" uses real OS threads via Werkzeug's threaded dev
+# server instead of eventlet's monkey-patched green threads. Plenty for this
+# app's concurrency needs (one demo, a handful of viewers) and it avoids
+# eventlet's monkey-patching landmines entirely (e.g. "RLock(s) were not
+# greened" when something in the host environment creates a lock before
+# monkey_patch() runs — that's what caused production 502s under eventlet).
+socketio = SocketIO(cors_allowed_origins="*", async_mode="threading")
 
 
 def init_socketio(app):
